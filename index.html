@@ -46,7 +46,6 @@
       user-select: none;
     }
 
-    /* Login button top-right */
     .login-button {
       position: fixed;
       top: 12px;
@@ -221,7 +220,8 @@
   <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
   <div class="top-bar">FrostBot.Ai</div>
 
-  <a href="login.html" class="login-button" aria-label="Login to FrostBot.Ai">Login</a>
+  <!-- Login button will be hidden if logged in -->
+  <a href="login.html" class="login-button" id="loginBtn" aria-label="Login to FrostBot.Ai">Login</a>
 
   <div class="sidebar" id="sidebar">
     <h1>FrostBot.Ai</h1>
@@ -293,5 +293,8 @@
       window.sendMessage = sendMessage;
     });
   </script>
+
+  <!-- Firebase Authentication Script -->
+  <script type="module" src="firebase.js"></script>
 </body>
 </html>
