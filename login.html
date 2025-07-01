@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - FrostBot.Ai</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
+  <style>
+    :root {
+      --font: 'Inter', sans-serif;
+      --bg: #ffffff;
+      --text: #1a1a1a;
+      --accent: #000000;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-container {
+      width: 100vw;
+      height: 100vh;
+      max-width: 100%;
+      background: #f7f7f7;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .back-arrow {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 1.5rem;
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .login-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      text-decoration: none;
+      background: var(--accent);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 400px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      background: var(--accent);
+      color: white;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .social-login {
+      margin-top: 20px;
+    }
+
+    .social-login button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #fff;
+      color: #000;
+      font-weight: 600;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .social-login button img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .error {
+      margin-top: 10px;
+      color: red;
+      text-align: center;
+    }
+
+    .register-link {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .register-link a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .cookie-banner {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: #1c1c1c;
+      color: #f5f5f5;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      z-index: 1000;
+    }
+    .cookie-banner button {
+      margin-left: 10px;
+      padding: 6px 14px;
+      border: none;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #1c1c1c;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <a href="index.html" class="back-arrow">← Back</a>
+    <a href="login.html" class="login-button">Login</a>
+    <div class="login-box">
+      <h2>Login to FrostBot.Ai</h2>
+      <form id="loginForm">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Login</button>
+        <div class="error" id="error"></div>
+      </form>
+
+      <div class="social-login">
+        <button class="google">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Continue with Google
+        </button>
+        <button class="apple">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple"> Continue with Apple
+        </button>
+      </div>
+
+      <div class="register-link">
+        Don't have an account? <a href="register.html">Register here</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="cookie-banner" id="cookieBanner">
+    <span>This site uses cookies to enhance your experience.</span>
+    <div>
+      <button onclick="acceptCookies()">Accept</button>
+      <button onclick="declineCookies()">Decline</button>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const errorBox = document.getElementById('error');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const username = form.username.value;
+      const password = form.password.value;
+
+      if (username === 'admin' && password === 'frostsecure123') {
+        localStorage.setItem('frostbotUser', username);
+        window.location.href = 'index.html';
+      } else {
+        errorBox.textContent = 'Invalid username or password';
+      }
+    });
+
+    function acceptCookies() {
+      document.cookie = "cookieConsent=true; path=/; max-age=31536000";
+      document.getElementById('cookieBanner').style.display = 'none';
+    }
+
+    function declineCookies() {
+      document.cookie = "cookieConsent=false; path=/; max-age=3600";
+      document.getElementById('cookieBanner').style.display = 'none';
+    }
+
+    function checkCookies() {
+      const cookies = document.cookie.split('; ').reduce((acc, val) => {
+        const [key, value] = val.split('=');
+        acc[key] = value;
+        return acc;
+      }, {});
+      if (cookies.cookieConsent === "true") {
+        document.getElementById('cookieBanner').style.display = 'none';
+      }
+    }
+
+    window.onload = checkCookies;
+  </script>
+</body>
+</html>
