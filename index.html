@@ -1,95 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FrostBot.Ai Chat</title>
-
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-
   <style>
-    /* Reset */
+    /* RESET */
     *, *::before, *::after {
       box-sizing: border-box;
     }
     body {
-      margin: 0; padding: 0;
+      margin: 0;
       font-family: 'Inter', sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      height: 100vh;
+      background: #121212;
+      color: #e0e6f0;
       display: flex;
+      height: 100vh;
       overflow: hidden;
       user-select: none;
-      transition: background-color 0.4s ease, color 0.4s ease;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      font-size: 16px;
+      line-height: 1.5;
     }
-
-    /* Variables for light/dark */
-    :root {
-      --bg: #121212;
-      --text: #e0e0e0;
-      --sidebar-bg: #1f1f1f;
-      --sidebar-text: #a8a8a8;
-      --accent: #00cfff;
-      --accent-hover: #00a4cc;
-      --input-bg: #2a2a2a;
-      --input-text: #fff;
-      --message-bg-user: linear-gradient(135deg, #00cfff 0%, #005f99 100%);
-      --message-bg-assistant: #292929;
-      --shadow: rgba(0, 207, 255, 0.3);
-      --border: #333;
-      --btn-bg: #00cfff;
-      --btn-hover: #00a4cc;
-      --mic-color: #00cfff;
-    }
-
+    /* LIGHT THEME */
     [data-theme="light"] {
-      --bg: #fff;
-      --text: #222;
-      --sidebar-bg: #f5f5f5;
-      --sidebar-text: #555;
-      --accent: #0066cc;
-      --accent-hover: #004999;
-      --input-bg: #eee;
-      --input-text: #222;
-      --message-bg-user: linear-gradient(135deg, #0088ff 0%, #004c99 100%);
-      --message-bg-assistant: #fafafa;
-      --shadow: rgba(0, 102, 204, 0.3);
-      --border: #ddd;
-      --btn-bg: #0066cc;
-      --btn-hover: #004999;
-      --mic-color: #0066cc;
+      background: #f7f9fc;
+      color: #2a2f45;
     }
 
-    /* Sidebar */
+    /* SIDEBAR */
     .sidebar {
-      width: 260px;
-      background-color: var(--sidebar-bg);
-      padding: 30px 24px;
+      width: 240px;
+      background: #1a1f2a;
+      border-right: 1px solid #2f3441;
+      padding: 28px 20px;
       display: flex;
       flex-direction: column;
-      border-right: 1px solid var(--border);
-      box-shadow: 2px 0 10px var(--shadow);
+      user-select: none;
       flex-shrink: 0;
+      box-shadow: inset -1px 0 0 #2f3441;
+      font-size: 1rem;
     }
     .sidebar-header {
       display: flex;
       align-items: center;
       gap: 14px;
-      margin-bottom: 28px;
-      user-select: none;
+      margin-bottom: 30px;
     }
     .logo {
       width: 36px;
       height: 36px;
-      fill: var(--accent);
+      stroke: #a3b1c6;
+      stroke-width: 3;
+      fill: none;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 6px rgba(163,177,198,0.7));
     }
     .sidebar-title {
       font-weight: 700;
-      font-size: 1.6rem;
-      color: var(--accent);
-      letter-spacing: 0.05em;
+      font-size: 1.75rem;
+      color: #a3b1c6;
+      letter-spacing: 0.07em;
+      user-select: text;
     }
     nav {
       display: flex;
@@ -97,23 +73,23 @@
       gap: 16px;
     }
     nav a {
-      color: var(--sidebar-text);
-      font-weight: 600;
-      font-size: 1.1rem;
       text-decoration: none;
+      color: #bec5d6;
+      font-weight: 600;
+      font-size: 1.15rem;
       padding: 12px 18px;
-      border-radius: 10px;
-      transition: background-color 0.25s ease, color 0.25s ease;
+      border-radius: 12px;
+      transition: background-color 0.3s ease, color 0.3s ease;
       user-select: none;
     }
-    nav a.active,
-    nav a:hover {
-      background-color: var(--accent);
-      color: var(--bg);
-      box-shadow: 0 0 8px var(--accent);
+    nav a:hover,
+    nav a.active {
+      background: #c0d6e4;
+      color: #1a1f2a;
+      box-shadow: 0 0 14px #c0d6e4aa;
     }
 
-    /* Theme toggle */
+    /* THEME TOGGLE */
     .theme-toggle {
       margin-top: auto;
       display: flex;
@@ -121,16 +97,18 @@
       padding-top: 20px;
     }
     .theme-toggle input {
+      -webkit-appearance: none;
+      -moz-appearance: none;
       appearance: none;
-      width: 50px;
+      width: 56px;
       height: 28px;
-      background: var(--input-bg);
+      background: #2b2f3a;
       border-radius: 50px;
       position: relative;
       cursor: pointer;
       outline: none;
-      transition: background-color 0.3s ease;
-      box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+      box-shadow: inset 0 0 8px #1f2128;
+      transition: background-color 0.4s ease;
     }
     .theme-toggle input::before {
       content: "";
@@ -139,189 +117,228 @@
       left: 3px;
       width: 22px;
       height: 22px;
+      background: #c0d6e4;
       border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 5px var(--accent);
-      transition: 0.3s ease;
+      box-shadow: 0 0 8px #c0d6e4aa;
+      transition: left 0.4s ease, background-color 0.4s ease;
     }
     .theme-toggle input:checked {
-      background: var(--btn-bg);
-      box-shadow: inset 0 0 10px var(--accent);
+      background: #c0d6e4;
+      box-shadow: inset 0 0 14px #c0d6e4aa;
     }
     .theme-toggle input:checked::before {
-      left: 25px;
-      background: var(--bg);
+      left: 31px;
+      background: #1a1f2a;
       box-shadow: none;
     }
 
-    /* Main */
+    /* MAIN AREA */
     .main {
-      flex: 1;
+      flex-grow: 1;
+      background: #121212;
+      padding: 28px 28px 20px 28px;
       display: flex;
       flex-direction: column;
-      background-color: var(--bg);
-      padding: 30px 28px 24px 28px;
-      overflow: hidden;
-      position: relative;
+      user-select: text;
+      transition: background-color 0.3s ease;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    [data-theme="light"] .main {
+      background: #fff;
     }
 
-    /* Chat box */
+    /* CHAT BOX */
     .chat-box {
       flex-grow: 1;
       overflow-y: auto;
-      padding-right: 12px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
+      padding-right: 14px;
       scrollbar-width: thin;
-      scrollbar-color: var(--accent) transparent;
-      user-select: text;
+      scrollbar-color: #a3b1c6 transparent;
+      max-width: 720px;
+      margin: 0 auto;
     }
     .chat-box::-webkit-scrollbar {
-      width: 7px;
+      width: 8px;
     }
     .chat-box::-webkit-scrollbar-thumb {
-      background-color: var(--accent);
-      border-radius: 3.5px;
+      background-color: #a3b1c6;
+      border-radius: 5px;
     }
 
-    /* Messages */
+    /* MESSAGES */
     .message {
       max-width: 70%;
       padding: 16px 22px;
-      border-radius: 24px;
-      font-size: 1.05rem;
+      border-radius: 22px;
+      font-size: 1.1rem;
       line-height: 1.4;
+      background: #282c3d;
+      color: #e0e6f0;
+      user-select: text;
+      box-shadow: 0 8px 15px rgb(0 0 0 / 0.35);
       white-space: pre-wrap;
-      background: var(--message-bg-assistant);
-      color: var(--text);
-      box-shadow: 0 8px 16px rgb(0 0 0 / 0.25);
+      word-wrap: break-word;
       opacity: 0;
       transform: translateY(15px);
       animation: fadeInUp 0.3s forwards;
-      word-wrap: break-word;
-      user-select: text;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
     .message.user {
-      background: var(--message-bg-user);
       align-self: flex-end;
-      color: #fff;
+      background: linear-gradient(135deg, #c0d6e4, #8fa9bf);
+      color: #1a1f2a;
       font-weight: 600;
       box-shadow:
-        0 8px 18px rgb(0 207 255 / 0.55),
-        0 0 10px rgb(0 207 255 / 0.7);
+        0 8px 22px rgba(192,214,228,0.7),
+        0 0 16px rgba(143,169,191,0.9);
       animation-delay: 0.1s;
     }
     .message.assistant {
       align-self: flex-start;
       animation-delay: 0.2s;
     }
+    [data-theme="light"] .message {
+      background: #e7eaf2;
+      color: #2a2f45;
+      box-shadow: none;
+    }
+    [data-theme="light"] .message.user {
+      background: linear-gradient(135deg, #c0d6e4, #8fa9bf);
+      color: #1a1f2a;
+      box-shadow:
+        0 8px 22px rgba(192,214,228,0.7),
+        0 0 16px rgba(143,169,191,0.9);
+    }
 
-    /* Input area */
+    /* INPUT AREA */
     .input-area {
+      margin-top: 18px;
       display: flex;
       gap: 12px;
       align-items: center;
-      margin-top: 14px;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
     }
-    .input-area input {
-      flex: 1;
-      font-size: 1.15rem;
-      padding: 16px 20px;
-      border-radius: 9999px;
+    #userInput {
+      flex-grow: 1;
+      font-size: 1.1rem;
+      padding: 16px 24px;
+      border-radius: 40px;
       border: none;
-      background-color: var(--input-bg);
-      color: var(--input-text);
+      background: #2b2f3a;
+      color: #e0e6f0;
+      resize: none;
+      min-height: 48px;
+      max-height: 130px;
+      line-height: 1.4;
+      font-family: 'Inter', sans-serif;
       outline-offset: 3px;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      user-select: text;
+      overflow-y: auto;
     }
-    .input-area input::placeholder {
-      color: var(--accent);
-      opacity: 0.6;
+    #userInput::placeholder {
+      color: #a3b1c6;
+      opacity: 0.75;
     }
-    .input-area input:focus {
-      background-color: var(--accent-hover);
-      color: var(--bg);
+    #userInput:focus {
+      background: #7189a6;
+      color: #121212;
+    }
+    [data-theme="light"] #userInput {
+      background: #f4f7fb;
+      color: #2a2f45;
+    }
+    [data-theme="light"] #userInput:focus {
+      background: #a3b1c6;
+      color: #121212;
     }
 
-    /* Buttons */
+    /* BUTTONS */
     button {
       border: none;
       cursor: pointer;
-      border-radius: 9999px;
-      font-weight: 600;
-      font-size: 1.2rem;
-      padding: 14px 20px;
-      background-color: var(--btn-bg);
-      color: var(--bg);
-      box-shadow:
-        0 8px 12px rgb(0 207 255 / 0.35);
-      transition:
-        background-color 0.3s ease,
-        box-shadow 0.3s ease;
-      user-select: none;
+      border-radius: 50%;
+      width: 52px;
+      height: 52px;
+      background: #a3b1c6;
+      color: #121212;
+      font-weight: 700;
+      font-size: 1.4rem;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      box-shadow:
+        0 8px 16px rgba(163,177,198,0.5);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      flex-shrink: 0;
+      padding: 0;
     }
     button:disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
       box-shadow: none;
     }
     button:hover:not(:disabled) {
-      background-color: var(--btn-hover);
+      background: #7189a6;
       box-shadow:
-        0 0 20px var(--btn-hover);
+        0 0 18px #7189a6;
     }
     button.reset-btn {
-      background: transparent;
-      color: var(--accent);
+      border-radius: 28px;
+      padding: 10px 22px;
       font-size: 1rem;
-      padding: 8px 14px;
+      width: auto;
+      height: 44px;
+      background: transparent;
+      color: #a3b1c6;
       box-shadow: none;
+      margin-left: 10px;
+      font-weight: 600;
       transition: color 0.3s ease;
-      margin-left: 6px;
-      min-width: 90px;
-      justify-content: center;
     }
     button.reset-btn:hover {
-      color: var(--btn-hover);
+      color: #7189a6;
     }
 
-    /* Send button arrow */
+    /* Send icon */
     .send-icon {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      margin-left: 8px;
+      width: 20px;
+      height: 20px;
       stroke: currentColor;
       stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
       transition: transform 0.3s ease;
+      margin-left: 8px;
     }
     button:active .send-icon {
-      transform: translateX(3px) scale(1.1);
+      transform: translateX(4px) scale(1.1);
     }
 
     /* Mic button */
     .mic-btn {
       background: transparent;
-      color: var(--accent);
-      font-size: 1.6rem;
       border-radius: 50%;
-      width: 44px;
-      height: 44px;
+      width: 52px;
+      height: 52px;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 0;
-      margin-left: 8px;
-      border: 2.5px solid var(--accent);
+      margin-left: 12px;
       cursor: pointer;
+      color: #a3b1c6;
+      border: 3px solid #a3b1c6;
       transition: color 0.3s ease, border-color 0.3s ease;
+      user-select: none;
+      flex-shrink: 0;
     }
     .mic-btn.listening {
       color: #f24e4e;
@@ -329,13 +346,13 @@
       animation: pulse 1.2s infinite;
     }
     .mic-icon {
+      width: 24px;
+      height: 24px;
       stroke: currentColor;
-      stroke-width: 2.5;
+      stroke-width: 2.8;
       stroke-linejoin: round;
       stroke-linecap: round;
       fill: none;
-      width: 22px;
-      height: 22px;
     }
 
     /* Animations */
@@ -347,7 +364,7 @@
     }
     @keyframes pulse {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      50% { opacity: 0.4; }
     }
 
     /* Responsive */
@@ -357,14 +374,14 @@
       }
       .sidebar {
         width: 100%;
-        height: 70px;
+        height: 68px;
+        padding: 0 24px;
         flex-direction: row;
         align-items: center;
-        padding: 0 20px;
         border-right: none;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid #2f3441;
         box-shadow: none;
-        gap: 22px;
+        gap: 18px;
       }
       .sidebar-header {
         display: none;
@@ -372,43 +389,52 @@
       nav {
         flex-direction: row;
         flex-grow: 1;
-        gap: 18px;
+        gap: 20px;
       }
       nav a {
-        padding: 8px 14px;
+        padding: 10px 14px;
         font-size: 1rem;
+        border-radius: 20px;
         background: transparent;
-        border-radius: 0;
-        color: var(--accent);
+        color: #a3b1c6;
       }
       nav a:hover,
       nav a.active {
-        background: var(--accent);
-        color: var(--bg);
-        border-radius: 16px;
-        box-shadow: 0 0 8px var(--accent);
+        background: #a3b1c6;
+        color: #121212;
+        box-shadow: 0 0 12px #a3b1c6;
       }
       .main {
-        padding: 18px 16px 12px 16px;
+        padding: 20px 16px 16px 16px;
         flex-grow: 1;
         overflow: hidden;
       }
       .chat-box {
+        padding-right: 8px;
         margin-bottom: 8px;
-        padding-right: 6px;
+        max-width: 100%;
       }
-      .input-area input {
+      #userInput {
         font-size: 1rem;
-        padding: 12px 14px;
+        padding: 14px 18px;
+        min-height: 40px;
+        max-height: 90px;
       }
       button, .mic-btn {
-        font-size: 1.1rem;
-        padding: 10px 16px;
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
       }
       button.reset-btn {
         font-size: 0.9rem;
         min-width: 75px;
-        margin-left: 4px;
+        margin-left: 6px;
+        padding: 8px 18px;
+      }
+      .input-area {
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
       }
     }
   </style>
@@ -416,10 +442,10 @@
 <body>
   <aside class="sidebar" role="navigation" aria-label="Sidebar navigation">
     <div class="sidebar-header">
-      <!-- FrostBot.Ai Snowflake Logo -->
+      <!-- Snowflake Logo -->
       <svg class="logo" viewBox="0 0 64 64" aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg">
-        <path d="M32 4L32 60M10 24L54 40M10 40L54 24" />
-        <circle cx="32" cy="32" r="14" />
+        <path d="M32 4L32 60M10 24L54 40M10 40L54 24" stroke="#a3b1c6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+        <circle cx="32" cy="32" r="14" stroke="#a3b1c6" stroke-width="3" fill="none"/>
       </svg>
       <div class="sidebar-title">FrostBot.Ai</div>
     </div>
@@ -442,59 +468,21 @@
       </div>
     </div>
     <div class="input-area">
-      <input
-        type="text"
+      <textarea
         id="userInput"
         aria-label="Type your question here"
         placeholder="Type your question here..."
         autocomplete="off"
         spellcheck="false"
-      />
-      <button id="sendBtn" aria-label="Send message" title="Send message">
+        rows="1"
+      ></textarea>
+      <button id="sendBtn" aria-label="Send message" title="Send message" disabled>
         Send
         <svg class="send-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" >
-          <path d="M5 12h14M13 5l7 7-7 7" />
+          <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
       <button id="resetBtn" class="reset-btn" aria-label="Reset chat" title="Reset chat">Reset</button>
       <button id="micBtn" class="mic-btn" aria-label="Start voice input" title="Voice Input">
         <svg class="mic-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" >
-          <path d="M12 14a3 3 0 0 0 3-3V7a3 3 0 0 0-6 0v4a3 3 0 0 0 3 3z"/>
-          <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
-          <line x1="12" y1="19" x2="12" y2="23" />
-          <line x1="8" y1="23" x2="16" y2="23" />
-        </svg>
-      </button>
-    </div>
-
-    <!-- Put ad tag here -->
-  </main>
-
-  <script>
-    const messages = [
-      {
-        role: "system",
-        content:
-          "You are a helpful and friendly assistant. Always explain things simply and clearly. Keep it conversational and short."
-      }
-    ];
-
-    const chatBox = document.getElementById("chatBox");
-    const userInput = document.getElementById("userInput");
-    const sendBtn = document.getElementById("sendBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const micBtn = document.getElementById("micBtn");
-    const themeToggle = document.getElementById("themeToggle");
-
-    // Set theme from localStorage or default dark
-    const savedTheme = localStorage.getItem("theme") || "dark";
-    document.documentElement.setAttribute("data-theme", savedTheme);
-    themeToggle.checked = savedTheme === "light";
-
-    themeToggle.addEventListener("change", () => {
-      if (themeToggle.checked) {
-        document.documentElement.setAttribute("data-theme", "light");
-        localStorage.setItem("theme", "light");
-      } else {
-        document.documentElement.setAttribute("data-theme", "dark");
-       
+          <path d="M12 14a3 3 0 0 0 3-3V7a3 3 0 0 0-6 0v4a3 
