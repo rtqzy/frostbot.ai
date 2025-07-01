@@ -17,8 +17,7 @@
       --input-bg: #ffffff;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { font-family: var(--font); background: var(--bg); color: var(--text); height: 100%; overflow: auto; }
-    body { display: flex; flex-direction: column; }
+    html, body { font-family: var(--font); background: var(--bg); color: var(--text); height: 100%; overflow: hidden; }
 
     .sidebar-toggle {
       position: fixed;
@@ -80,21 +79,30 @@
     }
 
     .main {
-      margin-top: 50px;
-      padding-left: 20px;
-      padding-right: 20px;
-      padding-bottom: 20px;
+      position: absolute;
+      top: 50px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 20px;
+      transition: margin-left 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .main.sidebar-open {
+      margin-left: 260px;
     }
 
     .chat-box {
-      padding: 100px 0 80px;
-      max-width: 800px;
-      margin: auto;
+      flex: 1;
       overflow-y: auto;
-      height: calc(100vh - 200px);
+      max-width: 800px;
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      padding-top: 1rem;
     }
 
     .message {
@@ -103,16 +111,22 @@
       font-size: 1rem;
       line-height: 1.6;
       max-width: 100%;
+      word-wrap: break-word;
+      white-space: pre-wrap;
     }
 
-    .assistant { background: var(--bot-bg); align-self: flex-start; }
-    .user { background: var(--user-bg); align-self: flex-end; }
+    .assistant {
+      background: var(--bot-bg);
+      align-self: flex-start;
+      text-align: left;
+    }
+    .user {
+      background: var(--user-bg);
+      align-self: flex-end;
+      text-align: right;
+    }
 
     .input-wrapper {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
       background: var(--input-bg);
       border-top: 1px solid #ddd;
       padding: 16px;
@@ -149,13 +163,22 @@
       height: 36px;
       margin-left: 10px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
     }
 
     .footer-note {
       text-align: center;
       font-size: 0.9rem;
       color: #888;
-      margin-top: 20px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .main.sidebar-open { margin-left: 0; }
+      .sidebar { width: 220px; }
     }
   </style>
 </head>
@@ -164,67 +187,73 @@
   <div class="top-bar">FrostBot.Ai</div>
   <div class="sidebar" id="sidebar">
     <h1>FrostBot.Ai</h1>
-    <button>💬 AI Chat</button>
-    <button>🎙️ Voice Mode</button>
-    <button>🕘 Saved Conversations</button>
-    <button>⚙️ Settings</button>
-    <button>🔐 Login</button>
-    <button onclick="toggleTheme()">🌓 Toggle Theme</button>
+    <button>AI Chat</button>
+    <button>Voice Mode</button>
+    <button>Saved Conversations</button>
+    <button>Settings</button>
+    <button>Login</button>
+    <button onclick="toggleTheme()">Toggle Theme</button>
     <div style="margin-top: 20px; font-size: 0.8rem; color: #999;">[ Put ad tag here ]</div>
   </div>
 
-  <div class="main">
+  <div class="main" id="mainContent">
     <div class="chat-box" id="chatBox">
       <div class="message assistant">Welcome to FrostBot.Ai! Ask me anything.</div>
     </div>
     <div class="input-wrapper">
       <div class="input-bar">
         <textarea id="userInput" rows="1" placeholder="Send a message..."></textarea>
-        <button onclick="sendMessage()">▶</button>
+        <button onclick="sendMessage()">→</button>
       </div>
     </div>
     <div class="footer-note">FrostBot.Ai can make mistakes. Consider checking important information.</div>
   </div>
 
   <script>
-    const chatBox = document.getElementById("chatBox");
-    const userInput = document.getElementById("userInput");
-    const sidebar = document.getElementById("sidebar");
+    window.addEventListener("DOMContentLoaded", () => {
+      const chatBox = document.getElementById("chatBox");
+      const userInput = document.getElementById("userInput");
+      const sidebar = document.getElementById("sidebar");
+      const main = document.getElementById("mainContent");
 
-    function appendMessage(text, type = "assistant") {
-      const msg = document.createElement("div");
-      msg.className = `message ${type}`;
-      msg.textContent = text;
-      chatBox.appendChild(msg);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function sendMessage() {
-      const input = userInput.value.trim();
-      if (!input) return;
-      appendMessage(input, "user");
-      userInput.value = "";
-      setTimeout(() => {
-        appendMessage("This is a placeholder FrostBot.Ai response.", "assistant");
-      }, 1000);
-    }
-
-    userInput.addEventListener("keydown", function(e) {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
+      function appendMessage(text, type = "assistant") {
+        const msg = document.createElement("div");
+        msg.className = `message ${type}`;
+        msg.textContent = text;
+        chatBox.appendChild(msg);
+        chatBox.scrollTop = chatBox.scrollHeight;
       }
+
+      function sendMessage() {
+        const input = userInput.value.trim();
+        if (!input) return;
+        appendMessage(input, "user");
+        userInput.value = "";
+        setTimeout(() => {
+          appendMessage("This is a placeholder FrostBot.Ai response.", "assistant");
+        }, 1000);
+      }
+
+      userInput.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      window.toggleSidebar = function () {
+        sidebar.classList.toggle("show");
+        main.classList.toggle("sidebar-open");
+      }
+
+      window.toggleTheme = function () {
+        const html = document.documentElement;
+        const current = html.getAttribute("data-theme");
+        html.setAttribute("data-theme", current === "light" ? "dark" : "light");
+      }
+
+      window.sendMessage = sendMessage;
     });
-
-    function toggleSidebar() {
-      sidebar.classList.toggle("show");
-    }
-
-    function toggleTheme() {
-      const html = document.documentElement;
-      const current = html.getAttribute("data-theme");
-      html.setAttribute("data-theme", current === "light" ? "dark" : "light");
-    }
   </script>
 </body>
 </html>
