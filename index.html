@@ -1,210 +1,219 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FrostBot.Ai Chat</title>
-  
+
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
   <style>
-    /* Reset & Base */
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
+    /* Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
     }
     body {
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      height: 100vh;
-      background: var(--bg);
+      margin: 0; padding: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
       color: var(--text);
-      transition: background 0.4s ease, color 0.4s ease;
-      user-select: none;
-      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      display: flex;
       overflow: hidden;
-      flex-direction: row;
+      user-select: none;
+      transition: background-color 0.4s ease, color 0.4s ease;
     }
-    /* Colors Frost Theme */
+
+    /* Variables for light/dark */
     :root {
-      --bg: #0e1726;
-      --bg-light: #e8f0ff;
-      --text: #d7e1f0;
-      --text-light: #172337;
-      --accent: #5fcde4;
-      --accent-dark: #44b0d6;
-      --msg-bg: #182b49;
-      --msg-bg-user: #1e3a66;
-      --msg-bg-alt: #223d6f;
-      --border: #4a739c;
-      --shadow: rgba(95, 205, 228, 0.3);
+      --bg: #121212;
+      --text: #e0e0e0;
+      --sidebar-bg: #1f1f1f;
+      --sidebar-text: #a8a8a8;
+      --accent: #00cfff;
+      --accent-hover: #00a4cc;
+      --input-bg: #2a2a2a;
+      --input-text: #fff;
+      --message-bg-user: linear-gradient(135deg, #00cfff 0%, #005f99 100%);
+      --message-bg-assistant: #292929;
+      --shadow: rgba(0, 207, 255, 0.3);
+      --border: #333;
+      --btn-bg: #00cfff;
+      --btn-hover: #00a4cc;
+      --mic-color: #00cfff;
     }
+
     [data-theme="light"] {
-      --bg: var(--bg-light);
-      --text: var(--text-light);
-      --msg-bg: #d6e3f5;
-      --msg-bg-user: #a7bee0;
-      --msg-bg-alt: #a2bedb;
-      --border: #789ed1;
-      --shadow: rgba(95, 205, 228, 0.5);
-      --accent: #3a6ba0;
-      --accent-dark: #2c567f;
+      --bg: #fff;
+      --text: #222;
+      --sidebar-bg: #f5f5f5;
+      --sidebar-text: #555;
+      --accent: #0066cc;
+      --accent-hover: #004999;
+      --input-bg: #eee;
+      --input-text: #222;
+      --message-bg-user: linear-gradient(135deg, #0088ff 0%, #004c99 100%);
+      --message-bg-assistant: #fafafa;
+      --shadow: rgba(0, 102, 204, 0.3);
+      --border: #ddd;
+      --btn-bg: #0066cc;
+      --btn-hover: #004999;
+      --mic-color: #0066cc;
     }
 
     /* Sidebar */
     .sidebar {
-      width: 240px;
-      background: var(--msg-bg);
-      padding: 25px 20px;
+      width: 260px;
+      background-color: var(--sidebar-bg);
+      padding: 30px 24px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
       border-right: 1px solid var(--border);
-      box-shadow: 2px 0 8px var(--shadow);
-      position: relative;
+      box-shadow: 2px 0 10px var(--shadow);
       flex-shrink: 0;
     }
     .sidebar-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
+      gap: 14px;
+      margin-bottom: 28px;
+      user-select: none;
     }
     .logo {
       width: 36px;
       height: 36px;
-      flex-shrink: 0;
       fill: var(--accent);
     }
-    .logo path {
-      stroke: var(--accent);
-      stroke-width: 2;
-      stroke-linejoin: round;
-      stroke-linecap: round;
-      fill: none;
-    }
-    .sidebar h1 {
-      font-weight: 600;
-      font-size: 1.4rem;
+    .sidebar-title {
+      font-weight: 700;
+      font-size: 1.6rem;
       color: var(--accent);
-      user-select: none;
+      letter-spacing: 0.05em;
     }
-    .sidebar nav a {
-      color: var(--text);
-      text-decoration: none;
-      padding: 12px 14px;
-      border-radius: 8px;
-      background: var(--msg-bg-alt);
+    nav {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    nav a {
+      color: var(--sidebar-text);
       font-weight: 600;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      font-size: 1.1rem;
+      text-decoration: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      transition: background-color 0.25s ease, color 0.25s ease;
       user-select: none;
-      display: block;
     }
-    .sidebar nav a:hover,
-    .sidebar nav a.active {
+    nav a.active,
+    nav a:hover {
       background-color: var(--accent);
       color: var(--bg);
+      box-shadow: 0 0 8px var(--accent);
     }
 
-    /* Dark/Light toggle */
-    .toggle-theme {
-      position: absolute;
-      bottom: 25px;
-      left: 20px;
+    /* Theme toggle */
+    .theme-toggle {
+      margin-top: auto;
       display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      user-select: none;
-      color: var(--accent);
-      font-weight: 600;
-      font-size: 0.9rem;
-      user-select: none;
+      justify-content: center;
+      padding-top: 20px;
     }
-    .toggle-theme input {
-      width: 40px;
-      height: 20px;
-      position: relative;
+    .theme-toggle input {
       appearance: none;
-      background: var(--msg-bg-alt);
-      outline: none;
-      border-radius: 20px;
-      box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+      width: 50px;
+      height: 28px;
+      background: var(--input-bg);
+      border-radius: 50px;
+      position: relative;
       cursor: pointer;
-      transition: background 0.3s ease;
+      outline: none;
+      transition: background-color 0.3s ease;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     }
-    .toggle-theme input:checked {
-      background: var(--accent);
-    }
-    .toggle-theme input::before {
-      content: '';
+    .theme-toggle input::before {
+      content: "";
       position: absolute;
-      width: 18px;
-      height: 18px;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
-      top: 1px;
-      left: 1px;
-      background: var(--bg);
+      background: var(--accent);
+      box-shadow: 0 0 5px var(--accent);
       transition: 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-    .toggle-theme input:checked::before {
-      left: 21px;
+    .theme-toggle input:checked {
+      background: var(--btn-bg);
+      box-shadow: inset 0 0 10px var(--accent);
+    }
+    .theme-toggle input:checked::before {
+      left: 25px;
+      background: var(--bg);
+      box-shadow: none;
     }
 
-    /* Main chat container */
+    /* Main */
     .main {
       flex: 1;
       display: flex;
       flex-direction: column;
-      background: var(--bg);
-      padding: 25px 25px 15px 25px;
-      position: relative;
+      background-color: var(--bg);
+      padding: 30px 28px 24px 28px;
       overflow: hidden;
-      min-width: 0;
+      position: relative;
     }
+
+    /* Chat box */
     .chat-box {
       flex-grow: 1;
       overflow-y: auto;
-      padding-right: 10px;
+      padding-right: 12px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
       scrollbar-width: thin;
       scrollbar-color: var(--accent) transparent;
+      user-select: text;
     }
     .chat-box::-webkit-scrollbar {
-      width: 6px;
+      width: 7px;
     }
     .chat-box::-webkit-scrollbar-thumb {
       background-color: var(--accent);
-      border-radius: 3px;
+      border-radius: 3.5px;
     }
+
+    /* Messages */
     .message {
-      max-width: 75%;
-      padding: 14px 18px;
-      border-radius: 20px;
-      font-size: 1rem;
-      line-height: 1.3;
+      max-width: 70%;
+      padding: 16px 22px;
+      border-radius: 24px;
+      font-size: 1.05rem;
+      line-height: 1.4;
       white-space: pre-wrap;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      background: var(--msg-bg);
+      background: var(--message-bg-assistant);
       color: var(--text);
-      user-select: text;
+      box-shadow: 0 8px 16px rgb(0 0 0 / 0.25);
       opacity: 0;
-      transform: translateY(12px);
+      transform: translateY(15px);
       animation: fadeInUp 0.3s forwards;
       word-wrap: break-word;
+      user-select: text;
+      transition: background-color 0.3s ease;
     }
     .message.user {
-      background: var(--msg-bg-user);
+      background: var(--message-bg-user);
       align-self: flex-end;
-      color: var(--text);
+      color: #fff;
       font-weight: 600;
+      box-shadow:
+        0 8px 18px rgb(0 207 255 / 0.55),
+        0 0 10px rgb(0 207 255 / 0.7);
       animation-delay: 0.1s;
     }
     .message.assistant {
-      background: var(--msg-bg);
       align-self: flex-start;
       animation-delay: 0.2s;
     }
@@ -212,80 +221,121 @@
     /* Input area */
     .input-area {
       display: flex;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 12px;
       align-items: center;
+      margin-top: 14px;
     }
     .input-area input {
       flex: 1;
-      padding: 12px 16px;
-      border-radius: 30px;
+      font-size: 1.15rem;
+      padding: 16px 20px;
+      border-radius: 9999px;
       border: none;
-      font-size: 1.1rem;
-      outline: none;
-      background: var(--msg-bg-alt);
-      color: var(--text);
-      transition: background 0.3s ease;
-      user-select: text;
+      background-color: var(--input-bg);
+      color: var(--input-text);
+      outline-offset: 3px;
+      transition: background-color 0.3s ease;
     }
     .input-area input::placeholder {
       color: var(--accent);
-      opacity: 0.7;
+      opacity: 0.6;
     }
     .input-area input:focus {
-      background: var(--msg-bg-user);
-    }
-    .input-area button {
-      background: var(--accent);
-      border: none;
-      border-radius: 30px;
+      background-color: var(--accent-hover);
       color: var(--bg);
-      font-weight: 700;
-      font-size: 1.1rem;
-      padding: 12px 24px;
+    }
+
+    /* Buttons */
+    button {
+      border: none;
       cursor: pointer;
-      box-shadow: 0 2px 8px var(--shadow);
-      transition: background 0.3s ease;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 1.2rem;
+      padding: 14px 20px;
+      background-color: var(--btn-bg);
+      color: var(--bg);
+      box-shadow:
+        0 8px 12px rgb(0 207 255 / 0.35);
+      transition:
+        background-color 0.3s ease,
+        box-shadow 0.3s ease;
       user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .input-area button:hover:not(:disabled) {
-      background: var(--accent-dark);
-    }
-    .input-area button:disabled {
-      cursor: not-allowed;
+    button:disabled {
       opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
     }
-    .input-area button.reset-btn {
+    button:hover:not(:disabled) {
+      background-color: var(--btn-hover);
+      box-shadow:
+        0 0 20px var(--btn-hover);
+    }
+    button.reset-btn {
       background: transparent;
       color: var(--accent);
-      font-weight: 600;
-      padding: 0 12px;
+      font-size: 1rem;
+      padding: 8px 14px;
       box-shadow: none;
-      margin-left: 10px;
-      font-size: 0.9rem;
-      border-radius: 0;
       transition: color 0.3s ease;
+      margin-left: 6px;
+      min-width: 90px;
+      justify-content: center;
     }
-    .input-area button.reset-btn:hover {
-      color: var(--accent-dark);
+    button.reset-btn:hover {
+      color: var(--btn-hover);
     }
+
+    /* Send button arrow */
+    .send-icon {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      margin-left: 8px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform 0.3s ease;
+    }
+    button:active .send-icon {
+      transform: translateX(3px) scale(1.1);
+    }
+
     /* Mic button */
     .mic-btn {
       background: transparent;
-      border: none;
       color: var(--accent);
       font-size: 1.6rem;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0;
+      margin-left: 8px;
+      border: 2.5px solid var(--accent);
       cursor: pointer;
-      transition: color 0.3s ease;
-      margin-left: 10px;
-      user-select: none;
-    }
-    .mic-btn:hover {
-      color: var(--accent-dark);
+      transition: color 0.3s ease, border-color 0.3s ease;
     }
     .mic-btn.listening {
       color: #f24e4e;
-      animation: pulse 1s infinite;
+      border-color: #f24e4e;
+      animation: pulse 1.2s infinite;
+    }
+    .mic-icon {
+      stroke: currentColor;
+      stroke-width: 2.5;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+      fill: none;
+      width: 22px;
+      height: 22px;
     }
 
     /* Animations */
@@ -296,9 +346,8 @@
       }
     }
     @keyframes pulse {
-      0% { opacity: 1; }
+      0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
-      100% { opacity: 1; }
     }
 
     /* Responsive */
@@ -315,57 +364,64 @@
         border-right: none;
         border-bottom: 1px solid var(--border);
         box-shadow: none;
-        gap: 20px;
+        gap: 22px;
       }
       .sidebar-header {
         display: none;
       }
-      .sidebar nav {
-        display: flex;
-        gap: 15px;
+      nav {
+        flex-direction: row;
         flex-grow: 1;
+        gap: 18px;
       }
-      .sidebar nav a {
-        padding: 8px 12px;
-        font-size: 0.9rem;
+      nav a {
+        padding: 8px 14px;
+        font-size: 1rem;
         background: transparent;
         border-radius: 0;
         color: var(--accent);
       }
-      .sidebar nav a:hover,
-      .sidebar nav a.active {
+      nav a:hover,
+      nav a.active {
         background: var(--accent);
         color: var(--bg);
-        border-radius: 12px;
+        border-radius: 16px;
+        box-shadow: 0 0 8px var(--accent);
       }
       .main {
-        padding: 15px 15px 10px 15px;
+        padding: 18px 16px 12px 16px;
         flex-grow: 1;
         overflow: hidden;
       }
       .chat-box {
-        margin-bottom: 10px;
+        margin-bottom: 8px;
+        padding-right: 6px;
       }
       .input-area input {
         font-size: 1rem;
+        padding: 12px 14px;
       }
-      .input-area button,
-      .input-area button.reset-btn,
-      .mic-btn {
-        font-size: 1rem;
-        padding: 10px 14px;
+      button, .mic-btn {
+        font-size: 1.1rem;
+        padding: 10px 16px;
+      }
+      button.reset-btn {
+        font-size: 0.9rem;
+        min-width: 75px;
+        margin-left: 4px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="sidebar" role="navigation" aria-label="Sidebar navigation">
+  <aside class="sidebar" role="navigation" aria-label="Sidebar navigation">
     <div class="sidebar-header">
-      <svg class="logo" viewBox="0 0 64 64" aria-hidden="true" role="img" >
-        <path d="M32 4L32 60M10 24L54 40M10 40L54 24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="32" cy="32" r="14" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- FrostBot.Ai Snowflake Logo -->
+      <svg class="logo" viewBox="0 0 64 64" aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 4L32 60M10 24L54 40M10 40L54 24" />
+        <circle cx="32" cy="32" r="14" />
       </svg>
-      <h1>FrostBot.Ai</h1>
+      <div class="sidebar-title">FrostBot.Ai</div>
     </div>
     <nav>
       <a href="#" class="active" aria-current="page">AI Chat</a>
@@ -374,15 +430,16 @@
       <a href="#">YouTube to MP3</a>
       <a href="#">Text Summarizer</a>
     </nav>
-    <label class="toggle-theme" for="themeToggle" title="Toggle dark/light theme">
-      Frost Theme
-      <input type="checkbox" id="themeToggle" aria-checked="false" />
-    </label>
-  </div>
+    <div class="theme-toggle" title="Toggle light/dark mode">
+      <input type="checkbox" id="themeToggle" aria-label="Toggle light/dark mode" />
+    </div>
+  </aside>
 
   <main class="main" role="main">
     <div class="chat-box" id="chatBox" aria-live="polite" aria-relevant="additions" tabindex="0">
-      <div class="message assistant" style="opacity:1; transform:none;">Welcome to FrostBot.Ai! Ask me anything.</div>
+      <div class="message assistant" style="opacity:1; transform:none;">
+        Welcome to FrostBot.Ai! Ask me anything.
+      </div>
     </div>
     <div class="input-area">
       <input
@@ -393,139 +450,51 @@
         autocomplete="off"
         spellcheck="false"
       />
-      <button id="sendBtn" aria-label="Send message">Send</button>
-      <button id="resetBtn" class="reset-btn" aria-label="Reset chat">Reset</button>
-      <button id="micBtn" class="mic-btn" aria-label="Start voice input" title="Voice Input 🎤">🎤</button>
+      <button id="sendBtn" aria-label="Send message" title="Send message">
+        Send
+        <svg class="send-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" >
+          <path d="M5 12h14M13 5l7 7-7 7" />
+        </svg>
+      </button>
+      <button id="resetBtn" class="reset-btn" aria-label="Reset chat" title="Reset chat">Reset</button>
+      <button id="micBtn" class="mic-btn" aria-label="Start voice input" title="Voice Input">
+        <svg class="mic-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" >
+          <path d="M12 14a3 3 0 0 0 3-3V7a3 3 0 0 0-6 0v4a3 3 0 0 0 3 3z"/>
+          <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+          <line x1="12" y1="19" x2="12" y2="23" />
+          <line x1="8" y1="23" x2="16" y2="23" />
+        </svg>
+      </button>
     </div>
+
     <!-- Put ad tag here -->
   </main>
 
-<script>
-  const messages = [
-    {
-      role: "system",
-      content: "You are a helpful and friendly assistant. Always explain things simply and clearly. Keep it conversational and short."
-    }
-  ];
-
-  const chatBox = document.getElementById("chatBox");
-  const userInput = document.getElementById("userInput");
-  const sendBtn = document.getElementById("sendBtn");
-  const resetBtn = document.getElementById("resetBtn");
-  const micBtn = document.getElementById("micBtn");
-  const themeToggle = document.getElementById("themeToggle");
-
-  // Auto scroll fix + smooth scroll helper
-  function scrollToBottom() {
-    chatBox.scrollTo({
-      top: chatBox.scrollHeight,
-      behavior: "smooth"
-    });
-  }
-
-  // Add message with typing animation
-  function addMessage(text, role) {
-    const messageDiv = document.createElement("div");
-    messageDiv.className = `message ${role}`;
-    chatBox.appendChild(messageDiv);
-
-    let i = 0;
-    function typeWriter() {
-      if (i < text.length) {
-        messageDiv.textContent += text.charAt(i);
-        i++;
-        setTimeout(typeWriter, 15);
-      } else {
-        messageDiv.style.opacity = "1";
-        scrollToBottom();
+  <script>
+    const messages = [
+      {
+        role: "system",
+        content:
+          "You are a helpful and friendly assistant. Always explain things simply and clearly. Keep it conversational and short."
       }
-    }
-    typeWriter();
-  }
+    ];
 
-  // Send message handler
-  async function sendMessage() {
-    const text = userInput.value.trim();
-    if (!text) return;
+    const chatBox = document.getElementById("chatBox");
+    const userInput = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const micBtn = document.getElementById("micBtn");
+    const themeToggle = document.getElementById("themeToggle");
 
-    // Show user message immediately
-    const userMsg = document.createElement("div");
-    userMsg.className = "message user";
-    userMsg.textContent = text;
-    chatBox.appendChild(userMsg);
-    scrollToBottom();
+    // Set theme from localStorage or default dark
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    themeToggle.checked = savedTheme === "light";
 
-    messages.push({ role: "user", content: text });
-    userInput.value = "";
-    userInput.disabled = true;
-    sendBtn.disabled = true;
-    micBtn.disabled = true;
-
-    // Show thinking
-    const thinkingMsg = document.createElement("div");
-    thinkingMsg.className = "message assistant";
-    thinkingMsg.textContent = "Typing...";
-    chatBox.appendChild(thinkingMsg);
-    scrollToBottom();
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages })
-      });
-      const data = await response.json();
-
-      // Remove thinking message
-      chatBox.removeChild(thinkingMsg);
-
-      if (data.reply) {
-        messages.push({ role: "assistant", content: data.reply });
-        addMessage(data.reply, "assistant");
+    themeToggle.addEventListener("change", () => {
+      if (themeToggle.checked) {
+        document.documentElement.setAttribute("data-theme", "light");
+        localStorage.setItem("theme", "light");
       } else {
-        addMessage("Sorry, no response from AI.", "assistant");
-      }
-    } catch (err) {
-      console.error(err);
-      chatBox.removeChild(thinkingMsg);
-      addMessage("Error contacting AI.", "assistant");
-    } finally {
-      userInput.disabled = false;
-      sendBtn.disabled = false;
-      micBtn.disabled = false;
-      userInput.focus();
-    }
-  }
-
-  // Reset chat handler
-  function resetChat() {
-    messages.length = 1; // reset to just system prompt
-    chatBox.innerHTML = "";
-    addMessage("Welcome to FrostBot.Ai! Ask me anything.", "assistant");
-  }
-
-  // Voice input (Web Speech API)
-  let recognition;
-  if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-      micBtn.classList.add("listening");
-      micBtn.title = "Listening...";
-    };
-    recognition.onend = () => {
-      micBtn.classList.remove("listening");
-      micBtn.title = "Voice Input 🎤";
-    };
-    recognition.onerror = (event) => {
-      console.error("Speech recognition error:", event.error);
-      micBtn.classList.remove("listening");
-      micBtn.title = "Voice Input 🎤";
-    };
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      userInput
+        document.documentElement.setAttribute("data-theme", "dark");
+       
