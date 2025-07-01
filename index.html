@@ -119,66 +119,53 @@
   </div>
 
   <script>
-    const messages = [
-      {
-        role: "system",
-        content: "You are a helpful and friendly assistant. Always explain things in a simple way and keep your responses short and easy to understand. Ask follow-up questions sometimes."
-      }
-    ];
-
     async function sendMessage() {
-      const input = document.getElementById("userInput");
-      const chat = document.getElementById("chatBox");
+      const input = document.getElementById('userInput');
+      const chat = document.getElementById('chatBox');
       const userText = input.value.trim();
       if (!userText) return;
 
       // Show user message
-      const userMessage = document.createElement("div");
-      userMessage.className = "message user";
+      const userMessage = document.createElement('div');
+      userMessage.className = 'message user';
       userMessage.textContent = userText;
       chat.appendChild(userMessage);
 
-      // Add to conversation memory
-      messages.push({ role: "user", content: userText });
-
-      // Show "Thinking..." message
-      const loadingMessage = document.createElement("div");
-      loadingMessage.className = "message";
-      loadingMessage.textContent = "Thinking...";
+      // Show loading message
+      const loadingMessage = document.createElement('div');
+      loadingMessage.className = 'message';
+      loadingMessage.textContent = 'Thinking...';
       chat.appendChild(loadingMessage);
       chat.scrollTop = chat.scrollHeight;
 
-      input.value = "";
+      // Clear input
+      input.value = '';
 
       try {
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-          method: "POST",
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer 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",
-            "Referer": "https://rtqzy.store",
-            "X-Title": "RTQZY AI Chat"
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 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',
+            'Referer': 'https://rtqzy.store',
+            'X-Title': 'RTQZY AI Chat'
           },
           body: JSON.stringify({
-            model: "mistralai/mistral-7b-instruct",
-            messages: messages
+            model: 'mistralai/mistral-7b-instruct',
+            messages: [{ role: 'user', content: userText }]
           })
         });
 
         const data = await response.json();
 
         if (data.choices && data.choices.length > 0) {
-          const reply = data.choices[0].message.content;
-          loadingMessage.textContent = reply;
-
-          // Add AI reply to memory
-          messages.push({ role: "assistant", content: reply });
+          loadingMessage.textContent = data.choices[0].message.content;
         } else {
-          loadingMessage.textContent = "Sorry, no response from AI.";
+          loadingMessage.textContent = 'Sorry, no response from AI.';
         }
       } catch (error) {
         console.error(error);
-        loadingMessage.textContent = "Sorry, something went wrong.";
+        loadingMessage.textContent = 'Sorry, something went wrong.';
       }
 
       chat.scrollTop = chat.scrollHeight;
