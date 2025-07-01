@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - FrostBot.Ai</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
   <style>
     :root {
       --font: 'Inter', sans-serif;
@@ -27,7 +27,6 @@
     .login-container {
       width: 100vw;
       height: 100vh;
-      max-width: 100%;
       background: #f7f7f7;
       padding: 40px;
       display: flex;
@@ -45,7 +44,6 @@
       text-decoration: none;
       color: var(--accent);
       font-weight: bold;
-      user-select: none;
     }
 
     .login-box {
@@ -60,16 +58,14 @@
     h2 {
       margin-bottom: 20px;
       text-align: center;
-      user-select: none;
     }
 
     label {
       display: block;
       margin: 10px 0 5px;
-      user-select: none;
     }
 
-    input[type="text"],
+    input[type="email"],
     input[type="password"] {
       width: 100%;
       padding: 10px;
@@ -87,7 +83,6 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      user-select: none;
     }
 
     .social-login {
@@ -104,8 +99,7 @@
       font-weight: 600;
       padding: 10px;
       border: 1px solid #ccc;
-      cursor: pointer;
-      user-select: none;
+      width: 100%;
     }
 
     .social-login button img {
@@ -117,14 +111,12 @@
       margin-top: 10px;
       color: red;
       text-align: center;
-      user-select: none;
     }
 
     .register-link {
       margin-top: 15px;
       text-align: center;
       font-size: 0.95rem;
-      user-select: none;
     }
 
     .register-link a {
@@ -132,50 +124,19 @@
       text-decoration: none;
       font-weight: 600;
     }
-
-    .cookie-banner {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      right: 20px;
-      background: #1c1c1c;
-      color: #f5f5f5;
-      padding: 12px 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.9rem;
-      z-index: 1000;
-      user-select: none;
-    }
-    .cookie-banner button {
-      margin-left: 10px;
-      padding: 6px 14px;
-      border: none;
-      border-radius: 6px;
-      background: #ffffff;
-      color: #1c1c1c;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 0.85rem;
-      user-select: none;
-    }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <a href="index.html" class="back-arrow" aria-label="Back to Home">← Back</a>
-
+    <a href="index.html" class="back-arrow">← Back</a>
     <div class="login-box">
       <h2>Login to FrostBot.Ai</h2>
-      <form id="loginForm" novalidate>
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" required autocomplete="username" />
+      <form id="loginForm">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
 
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" required autocomplete="current-password" />
+        <input type="password" id="password" name="password" required />
 
         <button type="submit">Login</button>
         <div class="error" id="error"></div>
@@ -183,10 +144,12 @@
 
       <div class="social-login">
         <button class="google">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" /> Continue with Google
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
+          Continue with Google
         </button>
         <button class="apple">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" /> Continue with Apple
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" />
+          Continue with Apple
         </button>
       </div>
 
@@ -196,56 +159,39 @@
     </div>
   </div>
 
-  <div class="cookie-banner" id="cookieBanner">
-    <span>This site uses cookies to enhance your experience.</span>
-    <div>
-      <button onclick="acceptCookies()">Accept</button>
-      <button onclick="declineCookies()">Decline</button>
-    </div>
-  </div>
+  <!-- Firebase Auth Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyASei9dKyRPz-USwVXAucdC8F1iPZLqYE0",
+      authDomain: "frostbot-ff6c4.firebaseapp.com",
+      projectId: "frostbot-ff6c4",
+      storageBucket: "frostbot-ff6c4.appspot.com",
+      messagingSenderId: "704743212531",
+      appId: "1:704743212531:web:e321d923bf8ff510817e86",
+      measurementId: "G-T0FF2DMZ2M"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
     const form = document.getElementById('loginForm');
     const errorBox = document.getElementById('error');
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      const username = form.username.value.trim();
+      const email = form.email.value;
       const password = form.password.value;
 
-      // Dummy check (replace with real auth later)
-      if (username === 'admin' && password === 'frostsecure123') {
-        localStorage.setItem('frostbotUser', username);
-        window.location.href = 'index.html';
-      } else {
-        errorBox.textContent = 'Invalid username or password';
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "index.html";
+      } catch (error) {
+        errorBox.textContent = "Invalid login: " + error.message;
       }
     });
-
-    // Cookie consent logic
-    function acceptCookies() {
-      document.cookie = "cookieConsent=true; path=/; max-age=31536000";
-      document.getElementById('cookieBanner').style.display = 'none';
-    }
-
-    function declineCookies() {
-      document.cookie = "cookieConsent=false; path=/; max-age=3600";
-      document.getElementById('cookieBanner').style.display = 'none';
-    }
-
-    function checkCookies() {
-      const cookies = document.cookie.split('; ').reduce((acc, val) => {
-        const [key, value] = val.split('=');
-        acc[key] = value;
-        return acc;
-      }, {});
-      if (cookies.cookieConsent === "true") {
-        document.getElementById('cookieBanner').style.display = 'none';
-      }
-    }
-
-    window.onload = checkCookies;
   </script>
 </body>
 </html>
