@@ -28,6 +28,7 @@
       border: none;
       font-size: 1.4rem;
       cursor: pointer;
+      user-select: none;
     }
 
     .top-bar {
@@ -46,6 +47,7 @@
       user-select: none;
     }
 
+    /* Login button top-right (smaller now) */
     .login-button {
       position: fixed;
       top: 12px;
@@ -54,16 +56,20 @@
       color: var(--bg);
       font-weight: 600;
       font-family: var(--font);
-      padding: 8px 16px;
+      padding: 6px 12px;
       border-radius: 8px;
       text-decoration: none;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       z-index: 1101;
       user-select: none;
+      font-size: 0.85rem;
       transition: background-color 0.3s ease;
     }
     .login-button:hover {
       background-color: #333;
+    }
+    .login-button.hidden {
+      display: none !important;
     }
 
     .sidebar {
@@ -80,6 +86,7 @@
       transform: translateX(-100%);
       transition: transform 0.3s ease;
       z-index: 1000;
+      user-select: none;
     }
 
     .sidebar.show { transform: translateX(0); }
@@ -210,8 +217,8 @@
       .login-button {
         top: 10px;
         right: 10px;
-        padding: 6px 12px;
-        font-size: 0.9rem;
+        padding: 5px 10px;
+        font-size: 0.8rem;
       }
     }
   </style>
@@ -220,7 +227,6 @@
   <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
   <div class="top-bar">FrostBot.Ai</div>
 
-  <!-- Login button will be hidden if logged in -->
   <a href="login.html" class="login-button" id="loginBtn" aria-label="Login to FrostBot.Ai">Login</a>
 
   <div class="sidebar" id="sidebar">
@@ -229,8 +235,8 @@
     <button>Voice Mode</button>
     <button>Saved Conversations</button>
     <button>Settings</button>
-    <button>Login</button>
-    <button onclick="toggleTheme()">Toggle Theme</button>
+    <!-- Removed extra Login button here as requested -->
+    <button id="themeToggleBtn" onclick="toggleTheme()">Toggle Theme</button>
     <div style="margin-top: 20px; font-size: 0.8rem; color: #999;">[ Put ad tag here ]</div>
   </div>
 
@@ -247,12 +253,70 @@
     <div class="footer-note">FrostBot.Ai can make mistakes. Consider checking important information.</div>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyASei9dKyRPz-USwVXAucdC8F1iPZLqYE0",
+      authDomain: "frostbot-ff6c4.firebaseapp.com",
+      projectId: "frostbot-ff6c4",
+      storageBucket: "frostbot-ff6c4.appspot.com",
+      messagingSenderId: "704743212531",
+      appId: "1:704743212531:web:e321d923bf8ff510817e86",
+      measurementId: "G-T0FF2DMZ2M"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const loginBtn = document.getElementById('loginBtn');
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in — hide login button
+        loginBtn.classList.add('hidden');
+      } else {
+        // User signed out — show login button
+        loginBtn.classList.remove('hidden');
+      }
+    });
+
+    window.toggleSidebar = function () {
+      const sidebar = document.getElementById("sidebar");
+      const main = document.getElementById("mainContent");
+      sidebar.classList.toggle("show");
+      main.classList.toggle("sidebar-open");
+    };
+
+    window.toggleTheme = function () {
+      const html = document.documentElement;
+      const current = html.getAttribute("data-theme");
+      if (current === "light") {
+        html.setAttribute("data-theme", "dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        html.setAttribute("data-theme", "light");
+        localStorage.setItem("theme", "light");
+      }
+    };
+
+    // Persist theme on load
+    window.addEventListener("DOMContentLoaded", () => {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme) {
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      }
+    });
+
+    // Your existing chat code here:
     window.addEventListener("DOMContentLoaded", () => {
       const chatBox = document.getElementById("chatBox");
       const userInput = document.getElementById("userInput");
-      const sidebar = document.getElementById("sidebar");
-      const main = document.getElementById("mainContent");
 
       function appendMessage(text, type = "assistant") {
         const msg = document.createElement("div");
@@ -279,22 +343,8 @@
         }
       });
 
-      window.toggleSidebar = function () {
-        sidebar.classList.toggle("show");
-        main.classList.toggle("sidebar-open");
-      }
-
-      window.toggleTheme = function () {
-        const html = document.documentElement;
-        const current = html.getAttribute("data-theme");
-        html.setAttribute("data-theme", current === "light" ? "dark" : "light");
-      }
-
       window.sendMessage = sendMessage;
     });
   </script>
-
-  <!-- Firebase Authentication Script -->
-  <script type="module" src="firebase.js"></script>
 </body>
 </html>
