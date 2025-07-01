@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register - FrostBot.Ai</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
   <style>
     :root {
       --font: 'Inter', sans-serif;
@@ -27,7 +27,6 @@
     .register-container {
       width: 100vw;
       height: 100vh;
-      max-width: 100%;
       background: #f7f7f7;
       padding: 40px;
       display: flex;
@@ -45,7 +44,6 @@
       text-decoration: none;
       color: var(--accent);
       font-weight: bold;
-      user-select: none;
     }
 
     .register-box {
@@ -60,16 +58,13 @@
     h2 {
       margin-bottom: 20px;
       text-align: center;
-      user-select: none;
     }
 
     label {
       display: block;
       margin: 10px 0 5px;
-      user-select: none;
     }
 
-    input[type="text"],
     input[type="email"],
     input[type="password"] {
       width: 100%;
@@ -88,7 +83,6 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      user-select: none;
     }
 
     .social-login {
@@ -105,8 +99,7 @@
       font-weight: 600;
       padding: 10px;
       border: 1px solid #ccc;
-      cursor: pointer;
-      user-select: none;
+      width: 100%;
     }
 
     .social-login button img {
@@ -118,14 +111,12 @@
       margin-top: 10px;
       color: red;
       text-align: center;
-      user-select: none;
     }
 
     .login-link {
       margin-top: 15px;
       text-align: center;
       font-size: 0.95rem;
-      user-select: none;
     }
 
     .login-link a {
@@ -133,53 +124,19 @@
       text-decoration: none;
       font-weight: 600;
     }
-
-    .cookie-banner {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      right: 20px;
-      background: #1c1c1c;
-      color: #f5f5f5;
-      padding: 12px 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.9rem;
-      z-index: 1000;
-      user-select: none;
-    }
-    .cookie-banner button {
-      margin-left: 10px;
-      padding: 6px 14px;
-      border: none;
-      border-radius: 6px;
-      background: #ffffff;
-      color: #1c1c1c;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 0.85rem;
-      user-select: none;
-    }
   </style>
 </head>
 <body>
   <div class="register-container">
-    <a href="login.html" class="back-arrow" aria-label="Back to Login">← Back</a>
-
+    <a href="login.html" class="back-arrow">← Back</a>
     <div class="register-box">
       <h2>Register for FrostBot.Ai</h2>
-      <form id="registerForm" novalidate>
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" required autocomplete="username" />
-
+      <form id="registerForm">
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" required autocomplete="email" />
+        <input type="email" id="email" name="email" required />
 
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" required autocomplete="new-password" />
+        <input type="password" id="password" name="password" required minlength="6" />
 
         <button type="submit">Register</button>
         <div class="error" id="error"></div>
@@ -187,10 +144,12 @@
 
       <div class="social-login">
         <button class="google">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" /> Continue with Google
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
+          Continue with Google
         </button>
         <button class="apple">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" /> Continue with Apple
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" />
+          Continue with Apple
         </button>
       </div>
 
@@ -200,63 +159,40 @@
     </div>
   </div>
 
-  <div class="cookie-banner" id="cookieBanner">
-    <span>This site uses cookies to enhance your experience.</span>
-    <div>
-      <button onclick="acceptCookies()">Accept</button>
-      <button onclick="declineCookies()">Decline</button>
-    </div>
-  </div>
+  <!-- Firebase Auth Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyASei9dKyRPz-USwVXAucdC8F1iPZLqYE0",
+      authDomain: "frostbot-ff6c4.firebaseapp.com",
+      projectId: "frostbot-ff6c4",
+      storageBucket: "frostbot-ff6c4.appspot.com",
+      messagingSenderId: "704743212531",
+      appId: "1:704743212531:web:e321d923bf8ff510817e86",
+      measurementId: "G-T0FF2DMZ2M"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
     const form = document.getElementById('registerForm');
     const errorBox = document.getElementById('error');
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      const username = form.username.value.trim();
-      const email = form.email.value.trim();
+      const email = form.email.value;
       const password = form.password.value;
 
-      // Simple validation (replace with real register logic later)
-      if (!username || !email || !password) {
-        errorBox.textContent = 'Please fill in all fields.';
-        return;
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        // After registration, redirect to index page
+        window.location.href = "index.html";
+      } catch (error) {
+        errorBox.textContent = "Registration error: " + error.message;
       }
-      if (password.length < 6) {
-        errorBox.textContent = 'Password must be at least 6 characters.';
-        return;
-      }
-
-      // Fake success: save username to localStorage (demo only)
-      localStorage.setItem('frostbotUser', username);
-      window.location.href = 'index.html';
     });
-
-    // Cookie consent logic
-    function acceptCookies() {
-      document.cookie = "cookieConsent=true; path=/; max-age=31536000";
-      document.getElementById('cookieBanner').style.display = 'none';
-    }
-
-    function declineCookies() {
-      document.cookie = "cookieConsent=false; path=/; max-age=3600";
-      document.getElementById('cookieBanner').style.display = 'none';
-    }
-
-    function checkCookies() {
-      const cookies = document.cookie.split('; ').reduce((acc, val) => {
-        const [key, value] = val.split('=');
-        acc[key] = value;
-        return acc;
-      }, {});
-      if (cookies.cookieConsent === "true") {
-        document.getElementById('cookieBanner').style.display = 'none';
-      }
-    }
-
-    window.onload = checkCookies;
   </script>
 </body>
 </html>
