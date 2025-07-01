@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - FrostBot.Ai</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
   <style>
     :root {
       --font: 'Inter', sans-serif;
@@ -45,19 +45,7 @@
       text-decoration: none;
       color: var(--accent);
       font-weight: bold;
-    }
-
-    .login-button {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      text-decoration: none;
-      background: var(--accent);
-      color: #fff;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.95rem;
+      user-select: none;
     }
 
     .login-box {
@@ -72,11 +60,13 @@
     h2 {
       margin-bottom: 20px;
       text-align: center;
+      user-select: none;
     }
 
     label {
       display: block;
       margin: 10px 0 5px;
+      user-select: none;
     }
 
     input[type="text"],
@@ -97,6 +87,7 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      user-select: none;
     }
 
     .social-login {
@@ -113,6 +104,8 @@
       font-weight: 600;
       padding: 10px;
       border: 1px solid #ccc;
+      cursor: pointer;
+      user-select: none;
     }
 
     .social-login button img {
@@ -124,12 +117,14 @@
       margin-top: 10px;
       color: red;
       text-align: center;
+      user-select: none;
     }
 
     .register-link {
       margin-top: 15px;
       text-align: center;
       font-size: 0.95rem;
+      user-select: none;
     }
 
     .register-link a {
@@ -153,6 +148,7 @@
       align-items: center;
       font-size: 0.9rem;
       z-index: 1000;
+      user-select: none;
     }
     .cookie-banner button {
       margin-left: 10px;
@@ -164,21 +160,22 @@
       font-weight: 600;
       cursor: pointer;
       font-size: 0.85rem;
+      user-select: none;
     }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <a href="index.html" class="back-arrow">← Back</a>
-    <a href="login.html" class="login-button">Login</a>
+    <a href="index.html" class="back-arrow" aria-label="Back to Home">← Back</a>
+
     <div class="login-box">
       <h2>Login to FrostBot.Ai</h2>
-      <form id="loginForm">
+      <form id="loginForm" novalidate>
         <label for="username">Username</label>
-        <input type="text" id="username" name="username" required>
+        <input type="text" id="username" name="username" required autocomplete="username" />
 
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" name="password" required autocomplete="current-password" />
 
         <button type="submit">Login</button>
         <div class="error" id="error"></div>
@@ -186,10 +183,10 @@
 
       <div class="social-login">
         <button class="google">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Continue with Google
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" /> Continue with Google
         </button>
         <button class="apple">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple"> Continue with Apple
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" /> Continue with Apple
         </button>
       </div>
 
@@ -214,9 +211,10 @@
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const username = form.username.value;
+      const username = form.username.value.trim();
       const password = form.password.value;
 
+      // Dummy check (replace with real auth later)
       if (username === 'admin' && password === 'frostsecure123') {
         localStorage.setItem('frostbotUser', username);
         window.location.href = 'index.html';
@@ -225,6 +223,7 @@
       }
     });
 
+    // Cookie consent logic
     function acceptCookies() {
       document.cookie = "cookieConsent=true; path=/; max-age=31536000";
       document.getElementById('cookieBanner').style.display = 'none';
