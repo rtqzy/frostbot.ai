@@ -73,15 +73,10 @@
       font-family: var(--font);
       padding: 6px 12px;
       border-radius: 6px;
+      text-decoration: none;
       font-size: 0.85rem;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       z-index: 1101;
-      text-decoration: none;
-      user-select: none;
-      transition: background-color 0.3s ease;
-    }
-    .login-button:hover {
-      background-color: #333;
     }
     .sidebar {
       width: 260px;
@@ -104,7 +99,6 @@
     .sidebar h1 {
       font-size: 1.4rem;
       margin-bottom: 1rem;
-      user-select: none;
     }
     .sidebar button {
       background: none;
@@ -114,11 +108,6 @@
       padding: 10px 0;
       font-size: 1rem;
       cursor: pointer;
-      user-select: none;
-      transition: color 0.2s ease;
-    }
-    .sidebar button:hover {
-      color: var(--accent);
     }
     .main {
       position: absolute;
@@ -143,19 +132,15 @@
       flex-direction: column;
       gap: 0.6rem;
       padding-top: 1rem;
-      user-select: text;
     }
     .message {
-      padding: 8px 14px;
-      border-radius: 14px;
-      font-size: 0.9rem;
-      line-height: 1.4;
-      max-width: 70%;
+      padding: 10px 16px;
+      border-radius: 16px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      max-width: 80%;
       word-wrap: break-word;
       white-space: pre-wrap;
-      user-select: text;
-      box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
-      transition: background-color 0.2s ease;
     }
     .assistant {
       background: var(--bot-bg);
@@ -192,7 +177,6 @@
       background: transparent;
       outline: none;
       color: var(--text);
-      user-select: text;
     }
     .input-bar button {
       background: var(--accent);
@@ -207,18 +191,24 @@
       align-items: center;
       justify-content: center;
       font-size: 1.2rem;
-      user-select: none;
-      transition: background-color 0.3s ease;
-    }
-    .input-bar button:hover {
-      background-color: #333;
     }
     .footer-note {
       text-align: center;
       font-size: 0.85rem;
       color: #888;
       margin-top: 10px;
+    }
+    .toggle-container {
+      margin: 10px 0 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
       user-select: none;
+    }
+    .file-upload {
+      margin: 10px 0;
     }
     @media (max-width: 768px) {
       .main.sidebar-open {
@@ -230,21 +220,9 @@
       .login-button {
         top: 10px;
         right: 10px;
-        padding: 6px 10px;
-        font-size: 0.8rem;
       }
     }
   </style>
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-T0FF2DMZ2M"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-    gtag('config', 'G-T0FF2DMZ2M');
-  </script>
 </head>
 <body>
   <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
@@ -254,7 +232,9 @@
   <div class="sidebar" id="sidebar">
     <h1>FrostBot.Ai</h1>
     <button>AI Chat</button>
-    <button onclick="logoutUser()">Logout</button>
+    <button id="voiceToggleBtn">Voice Mode</button>
+    <button id="savedConvBtn">Saved Conversations</button>
+    <button onclick="logoutUser()" id="logoutBtn" style="display:none;">Logout</button>
     <button onclick="toggleTheme()">Toggle Theme</button>
     <div style="margin-top: 20px; font-size: 0.8rem; color: #999;">[ Put ad tag here ]</div>
   </div>
@@ -263,76 +243,148 @@
     <div class="chat-box" id="chatBox">
       <div class="message assistant">❄️ Welcome, traveler. What frost-bitten wisdom do you seek today?</div>
     </div>
+
+    <div class="toggle-container">
+      <label for="rapidToggle">Rapid Answers (faster replies)</label>
+      <input type="checkbox" id="rapidToggle" />
+    </div>
+
     <div class="input-wrapper">
       <div class="input-bar">
         <textarea id="userInput" rows="1" placeholder="Send a message..."></textarea>
         <button onclick="sendMessage()">→</button>
       </div>
+      <div class="file-upload">
+        <input type="file" id="fileUpload" multiple />
+      </div>
     </div>
-    <div class="footer-note">FrostBot.Ai can make mistakes. Consider checking important information.</div>
-  </div>
 
-  <script>
-    // Fix toggleSidebar moved outside GA script
-    function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      const main = document.getElementById("mainContent");
-      sidebar.classList.toggle("show");
-      main.classList.toggle("sidebar-open");
-    }
-  </script>
+    <div class="footer-note">
+      FrostBot.Ai can make mistakes. Consider checking important information.
+    </div>
+  </div>
 
   <script>
     window.addEventListener("DOMContentLoaded", () => {
       const chatBox = document.getElementById("chatBox");
       const userInput = document.getElementById("userInput");
+      const sidebar = document.getElementById("sidebar");
+      const main = document.getElementById("mainContent");
       const loginBtn = document.getElementById("loginBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const rapidToggle = document.getElementById("rapidToggle");
+      const voiceToggleBtn = document.getElementById("voiceToggleBtn");
+      const savedConvBtn = document.getElementById("savedConvBtn");
+      const fileUpload = document.getElementById("fileUpload");
 
-      function appendMessage(text, type = "assistant") {
-        const msg = document.createElement("div");
-        msg.className = `message ${type}`;
-        msg.textContent = text;
-        chatBox.appendChild(msg);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
+      // Toggle sidebar open/close
+      window.toggleSidebar = function () {
+        sidebar.classList.toggle("show");
+        main.classList.toggle("sidebar-open");
+      };
 
-      function sendMessage() {
-        const input = userInput.value.trim();
-        if (!input) return;
-        appendMessage(input, "user");
-        userInput.value = "";
-        setTimeout(() => {
-          appendMessage("🧊 Here's a placeholder response from FrostBot.Ai.", "assistant");
-        }, 1000);
-      }
-
-      userInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-          e.preventDefault();
-          sendMessage();
-        }
-      });
-
+      // Theme toggle
       window.toggleTheme = function () {
         const html = document.documentElement;
         const current = html.getAttribute("data-theme");
         html.setAttribute("data-theme", current === "light" ? "dark" : "light");
       };
 
-      window.sendMessage = sendMessage;
+      // Append message with optional extra class (e.g., typing)
+      function appendMessage(text, type = "assistant", extraClass = "") {
+        const msg = document.createElement("div");
+        msg.className = `message ${type} ${extraClass}`.trim();
+        msg.textContent = text;
+        chatBox.appendChild(msg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
 
+      // Load saved conversations (dummy example)
+      savedConvBtn.addEventListener("click", () => {
+        alert("Saved conversations feature coming soon!");
+      });
+
+      // Voice toggle (placeholder)
+      voiceToggleBtn.addEventListener("click", () => {
+        alert("Voice mode coming soon!");
+      });
+
+      // Logout function
       window.logoutUser = function () {
         localStorage.removeItem("frostbotUser");
         loginBtn.style.display = "block";
+        logoutBtn.style.display = "none";
         alert("You have been logged out.");
       };
 
-      // Hide login if user is logged in
+      // Check if logged in
       const currentUser = localStorage.getItem("frostbotUser");
       if (currentUser) {
         loginBtn.style.display = "none";
+        logoutBtn.style.display = "block";
+      } else {
+        loginBtn.style.display = "block";
+        logoutBtn.style.display = "none";
       }
+
+      // Handle file uploads (just display file names here)
+      fileUpload.addEventListener("change", () => {
+        const files = Array.from(fileUpload.files);
+        if (files.length) {
+          appendMessage(
+            `📎 Uploaded files: ${files.map((f) => f.name).join(", ")}`,
+            "user"
+          );
+          // TODO: Actually send files to backend or AI processor
+        }
+      });
+
+      // Send message to backend AI
+      async function sendMessage() {
+        const input = userInput.value.trim();
+        if (!input) return;
+
+        appendMessage(input, "user");
+        userInput.value = "";
+
+        appendMessage("🧊 FrostBot.Ai is thinking...", "assistant", "typing");
+
+        try {
+          const rapid = rapidToggle.checked;
+
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: input, rapid }),
+          });
+
+          if (!response.ok) throw new Error(`Error: ${response.status}`);
+
+          const data = await response.json();
+          // Remove typing indicator
+          const typingMsg = document.querySelector(".message.assistant.typing");
+          if (typingMsg) typingMsg.remove();
+
+          appendMessage(data.reply, "assistant");
+        } catch (err) {
+          const typingMsg = document.querySelector(".message.assistant.typing");
+          if (typingMsg) typingMsg.remove();
+          appendMessage("⚠️ Sorry, something went wrong.", "assistant");
+          console.error(err);
+        }
+      }
+
+      // Bind sendMessage to button and Enter key
+      userInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      window.sendMessage = sendMessage;
     });
   </script>
 </body>
 </html>
+
