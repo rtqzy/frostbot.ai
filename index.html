@@ -2,10 +2,10 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FrostBot.Ai</title>
   <meta name="description" content="FrostBot.Ai is your sleek AI assistant with chat, voice, file upload, and more." />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     :root {
@@ -16,6 +16,7 @@
       --bot-bg: #f5f5f5;
       --user-bg: #e0e0e0;
       --input-bg: #ffffff;
+      --transition-speed: 0.3s;
     }
     [data-theme="dark"] {
       --bg: #1a1a1a;
@@ -36,13 +37,14 @@
       color: var(--text);
       height: 100%;
       overflow: hidden;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
     }
     .top-bar {
       background-color: var(--bg);
       color: var(--text);
       border-bottom: 1px solid #ccc;
       padding: 12px 16px;
-      font-weight: bold;
+      font-weight: 600;
       text-align: center;
       font-size: 1.2rem;
       position: fixed;
@@ -50,6 +52,8 @@
       left: 0;
       right: 0;
       z-index: 1000;
+      user-select: none;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
     }
     .login-button {
       position: absolute;
@@ -60,8 +64,13 @@
       padding: 6px 12px;
       border-radius: 6px;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 600;
       font-size: 0.9rem;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+    .login-button:hover {
+      background: #444;
     }
     .sidebar {
       position: fixed;
@@ -76,10 +85,12 @@
       flex-direction: column;
       gap: 12px;
       z-index: 999;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
     }
     .sidebar h1 {
       font-size: 1.2rem;
       margin-bottom: 12px;
+      user-select: none;
     }
     .sidebar button {
       background: none;
@@ -89,7 +100,9 @@
       font-size: 1rem;
       padding: 8px;
       cursor: pointer;
-      transition: background 0.2s;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+      user-select: none;
     }
     .sidebar button:hover {
       background: rgba(0, 0, 0, 0.05);
@@ -107,21 +120,48 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+      padding-right: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent) transparent;
+    }
+    .chat-box::-webkit-scrollbar {
+      width: 8px;
+    }
+    .chat-box::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .chat-box::-webkit-scrollbar-thumb {
+      background-color: var(--accent);
+      border-radius: 4px;
     }
     .message {
       max-width: 75%;
       padding: 10px 16px;
       border-radius: 16px;
       line-height: 1.5;
+      word-break: break-word;
+      white-space: pre-wrap;
+      font-size: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      user-select: text;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
     .assistant {
       background: var(--bot-bg);
       align-self: flex-start;
+      border-bottom-left-radius: 4px;
     }
     .user {
       background: var(--user-bg);
       align-self: flex-end;
       text-align: right;
+      border-bottom-right-radius: 4px;
+    }
+    .timestamp {
+      font-size: 0.7rem;
+      color: gray;
+      margin-top: 2px;
+      user-select: none;
     }
     .input-wrapper {
       display: flex;
@@ -129,6 +169,7 @@
       padding: 12px;
       border-top: 1px solid #ccc;
       background-color: var(--input-bg);
+      transition: background-color var(--transition-speed);
     }
     .input-bar {
       flex-grow: 1;
@@ -138,6 +179,7 @@
       border-radius: 24px;
       padding: 8px 12px;
       background: var(--bg);
+      transition: background-color var(--transition-speed);
     }
     .input-bar textarea {
       flex-grow: 1;
@@ -147,6 +189,11 @@
       font-size: 1rem;
       color: var(--text);
       outline: none;
+      max-height: 6rem;
+      line-height: 1.4;
+      font-family: var(--font);
+      overflow-y: auto;
+      padding-right: 4px;
     }
     .input-bar button {
       background: var(--accent);
@@ -158,12 +205,29 @@
       margin-left: 8px;
       cursor: pointer;
       font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+    .input-bar button:hover:not(:disabled) {
+      background-color: #444;
+    }
+    .input-bar button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
     }
     .file-upload-label {
       margin-left: 12px;
       cursor: pointer;
       font-size: 1.4rem;
       color: var(--accent);
+      user-select: none;
+      transition: color 0.2s ease;
+    }
+    .file-upload-label:hover {
+      color: #444;
     }
     input[type='file'] {
       display: none;
@@ -173,40 +237,51 @@
       font-size: 0.85rem;
       color: #888;
       margin-top: 8px;
+      user-select: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+      .main {
+        padding: 72px 10px 10px 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="top-bar">
+  <div class="top-bar" role="banner">
     FrostBot.Ai
-    <a href="login.html" id="loginBtn" class="login-button">Login</a>
+    <a href="login.html" id="loginBtn" class="login-button" aria-label="Login to FrostBot.Ai">Login</a>
   </div>
 
-  <div class="sidebar">
+  <nav class="sidebar" role="navigation" aria-label="Sidebar navigation">
     <h1>FrostBot.Ai</h1>
-    <button onclick="location.reload()">AI Chat</button>
-    <button id="logoutBtn" onclick="logoutUser()">Logout</button>
-    <button onclick="toggleTheme()">Toggle Theme</button>
-    <div style="font-size: 0.85rem; color: gray;">[ Monetag Ad Here ]</div>
-  </div>
+    <button type="button" id="reloadChatBtn" aria-label="Reload AI Chat">AI Chat</button>
+    <button type="button" id="logoutBtn" aria-label="Logout from FrostBot.Ai">Logout</button>
+    <button type="button" id="toggleThemeBtn" aria-label="Toggle Light and Dark Theme">Toggle Theme</button>
+    <div style="font-size: 0.85rem; color: gray; margin-top:auto;">[ Monetag Ad Here ]</div>
+  </nav>
 
-  <div class="main">
-    <div class="chat-box" id="chatBox">
-      <div class="message assistant">❄️ Welcome, traveler. What frost-bitten wisdom do you seek today?</div>
-    </div>
-    <div class="input-wrapper">
+  <main class="main" role="main">
+    <section class="chat-box" id="chatBox" aria-live="polite" aria-label="Chat messages" tabindex="0">
+      <!-- Messages get appended here -->
+    </section>
+    <form class="input-wrapper" id="chatForm" aria-label="Chat input form">
       <div class="input-bar">
-        <textarea id="userInput" rows="1" placeholder="Send a message..."></textarea>
-        <button onclick="sendMessage()">→</button>
-        <button onclick="startVoiceInput()" title="Voice Input">🎙️</button>
+        <textarea id="userInput" rows="1" placeholder="Send a message..." aria-label="Message input"></textarea>
+        <button type="submit" id="sendBtn" aria-label="Send message" disabled>→</button>
+        <button type="button" id="voiceBtn" aria-label="Start voice input">🎙️</button>
       </div>
-      <label for="fileUpload" class="file-upload-label">📎</label>
-      <input type="file" id="fileUpload" multiple />
-    </div>
-    <div class="footer-note">
+      <label for="fileUpload" class="file-upload-label" aria-label="Upload files">📎</label>
+      <input type="file" id="fileUpload" multiple aria-label="File upload" />
+    </form>
+    <div class="footer-note" role="contentinfo">
       FrostBot.Ai can make mistakes. Consider checking important information.
     </div>
-  </div>
+  </main>
 
   <script>
     const chatBox = document.getElementById('chatBox');
@@ -214,103 +289,208 @@
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const fileUpload = document.getElementById('fileUpload');
-    const messages = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+    const sendBtn = document.getElementById('sendBtn');
+    const voiceBtn = document.getElementById('voiceBtn');
+    const reloadChatBtn = document.getElementById('reloadChatBtn');
+    const toggleThemeBtn = document.getElementById('toggleThemeBtn');
+    const chatForm = document.getElementById('chatForm');
 
-    messages.forEach(m => appendMessage(m.text, m.type));
+    // Message storage with timestamps
+    let messages = JSON.parse(localStorage.getItem('chatHistory') || '[]');
 
-    async function sendMessage() {
-      const input = userInput.value.trim();
-      if (!input) return;
-      appendMessage(input, 'user');
-      saveMessage(input, 'user');
-      userInput.value = '';
-      appendMessage('🧊 Thinking...', 'assistant');
-      try {
-        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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'
-          },
-          body: JSON.stringify({
-            model: 'openai/gpt-4o',
-            messages: [{ role: 'user', content: input }]
-          })
-        });
-        const data = await response.json();
-        const reply = data.choices?.[0]?.message?.content || '❄️ Something went wrong.';
-        chatBox.lastChild.textContent = reply;
-        saveMessage(reply, 'assistant');
-      } catch (err) {
-        chatBox.lastChild.textContent = '❄️ Something went wrong.';
-      }
-    }
-
-    function appendMessage(text, type = 'assistant') {
+    // Append a message with optional timestamp
+    function appendMessage(text, type = 'assistant', timestamp = new Date().toISOString()) {
       const msg = document.createElement('div');
       msg.className = `message ${type}`;
       msg.textContent = text;
+
+      const timeElem = document.createElement('div');
+      timeElem.className = 'timestamp';
+      timeElem.textContent = new Date(timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      msg.appendChild(document.createElement('br'));
+      msg.appendChild(timeElem);
+
       chatBox.appendChild(msg);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
 
+    // Save messages to localStorage
     function saveMessage(text, type) {
-      messages.push({ text, type });
+      messages.push({ text, type, timestamp: new Date().toISOString() });
       localStorage.setItem('chatHistory', JSON.stringify(messages));
     }
 
-    userInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
+    // Load saved messages
+    function loadMessages() {
+      chatBox.innerHTML = '';
+      if (messages.length === 0) {
+        appendMessage('❄️ Welcome, traveler. What frost-bitten wisdom do you seek today?', 'assistant');
+        saveMessage('❄️ Welcome, traveler. What frost-bitten wisdom do you seek today?', 'assistant');
+      } else {
+        messages.forEach(m => appendMessage(m.text, m.type, m.timestamp));
       }
+    }
+
+    // Auto-expand textarea based on content
+    function autoExpandTextarea() {
+      userInput.style.height = 'auto';
+      userInput.style.height = userInput.scrollHeight + 'px';
+    }
+
+    userInput.addEventListener('input', () => {
+      autoExpandTextarea();
+      sendBtn.disabled = userInput.value.trim() === '';
     });
 
+    // Handle chat form submission
+    chatForm.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!userInput.value.trim()) return;
+      sendMessage(userInput.value.trim());
+    });
+
+    // Append user message and request AI response
+    async function sendMessage(input) {
+      appendMessage(input, 'user');
+      saveMessage(input, 'user');
+      userInput.value = '';
+      autoExpandTextarea();
+      sendBtn.disabled = true;
+
+      appendMessage('🧊 Thinking...', 'assistant');
+      saveMessage('🧊 Thinking...', 'assistant');
+
+      try {
+        // Call your backend proxy here instead of OpenRouter directly:
+        // Change 'YOUR_BACKEND_PROXY_URL' to your deployed proxy URL
+        const response = await fetch('https://your-backend-proxy-url/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'nousresearch/nous-hermes-2-mixtral',
+            messages: [{ role: 'user', content: input }]
+          })
+        });
+
+        if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+        const data = await response.json();
+        const reply = data.choices?.[0]?.message?.content || '❄️ Something went wrong.';
+
+        // Remove the last 'Thinking...' message
+        const lastMsg = chatBox.querySelector('.message.assistant:last-child');
+        if (lastMsg && lastMsg.textContent.startsWith('🧊 Thinking')) {
+          chatBox.removeChild(lastMsg);
+          messages.pop(); // Remove from saved messages too
+          localStorage.setItem('chatHistory', JSON.stringify(messages));
+        }
+
+        appendMessage(reply, 'assistant');
+        saveMessage(reply, 'assistant');
+      } catch (error) {
+        console.error(error);
+        const lastMsg = chatBox.querySelector('.message.assistant:last-child');
+        if (lastMsg && lastMsg.textContent.startsWith('🧊 Thinking')) {
+          lastMsg.textContent = '❄️ Sorry, something went wrong. Please try again later.';
+        }
+      }
+    }
+
+    // Voice input setup with error handling
+    function startVoiceInput() {
+      if (!('SpeechRecognition' in window) && !('webkitSpeechRecognition' in window)) {
+        alert('Voice input is not supported in your browser.');
+        return;
+      }
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        voiceBtn.textContent = '🎤...';
+        voiceBtn.disabled = true;
+      };
+
+      recognition.onresult = event => {
+        const transcript = event.results[0][0].transcript;
+        userInput.value = transcript;
+        autoExpandTextarea();
+        sendBtn.disabled = false;
+      };
+
+      recognition.onerror = event => {
+        alert('Voice recognition error: ' + event.error);
+      };
+
+      recognition.onend = () => {
+        voiceBtn.textContent = '🎙️';
+        voiceBtn.disabled = false;
+      };
+
+      recognition.start();
+    }
+
+    // File upload handler
     fileUpload.addEventListener('change', () => {
       const files = [...fileUpload.files];
       if (files.length > 0) {
         appendMessage(`📎 Uploaded file(s): ${files.map(f => f.name).join(', ')}`, 'user');
+        saveMessage(`📎 Uploaded file(s): ${files.map(f => f.name).join(', ')}`, 'user');
       }
       fileUpload.value = '';
     });
 
+    // Theme toggle with smooth animation
     function toggleTheme() {
       const html = document.documentElement;
-      const theme = html.getAttribute('data-theme');
-      html.setAttribute('data-theme', theme === 'light' ? 'dark' : 'light');
-      localStorage.setItem('theme', theme === 'light' ? 'dark' : 'light');
+      const current = html.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
     }
 
+    // Logout function
     function logoutUser() {
       localStorage.removeItem('frostbotUser');
-      loginBtn.style.display = 'block';
+      loginBtn.style.display = 'inline-block';
       logoutBtn.style.display = 'none';
       alert('You have been logged out.');
     }
 
-    function startVoiceInput() {
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = 'en-US';
-      recognition.onresult = event => {
-        userInput.value = event.results[0][0].transcript;
-        sendMessage();
-      };
-      recognition.start();
+    // Reload chat (clear chat history)
+    function reloadChat() {
+      if (confirm('Clear chat history and reload?')) {
+        localStorage.removeItem('chatHistory');
+        messages = [];
+        loadMessages();
+      }
     }
 
-    const user = localStorage.getItem('frostbotUser');
-    if (user) {
-      loginBtn.style.display = 'none';
-      logoutBtn.style.display = 'inline-block';
-    } else {
-      loginBtn.style.display = 'inline-block';
-      logoutBtn.style.display = 'none';
+    // Init UI based on saved state
+    function initUI() {
+      const user = localStorage.getItem('frostbotUser');
+      if (user) {
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'inline-block';
+      } else {
+        loginBtn.style.display = 'inline-block';
+        logoutBtn.style.display = 'none';
+      }
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+
+      sendBtn.disabled = true; // Initially disable send
+
+      loadMessages();
+      autoExpandTextarea();
     }
 
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    }
-  </script>
-</body>
-</html>
+    // Event listeners
+    logoutBtn.addEventListener('click', logoutUser);
+    reloadChatBtn.addEventListener('click', reloadChat);
+    toggleThemeBtn.add
