@@ -2,461 +2,234 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FrostBot.Ai</title>
-  <meta name="description" content="FrostBot.Ai is your sleek AI assistant with chat, voice, file upload, and more." />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
     :root {
-      --font: 'Inter', sans-serif;
-      --bg: #ffffff;
-      --text: #1a1a1a;
-      --accent: #000000;
-      --bot-bg: #f5f5f5;
-      --user-bg: #e0e0e0;
-      --input-bg: #ffffff;
+      --bg-light: #ffffff;
+      --text-light: #000000;
+      --bg-dark: #1f1f1f;
+      --text-dark: #f5f5f5;
+      --frost-blue: #a5dfff;
+    }
+
+    [data-theme="light"] {
+      --bg: var(--bg-light);
+      --text: var(--text-light);
     }
 
     [data-theme="dark"] {
-      --bg: #1a1a1a;
-      --text: #f5f5f5;
-      --accent: #ffffff;
-      --bot-bg: #2a2a2a;
-      --user-bg: #444;
-      --input-bg: #2a2a2a;
+      --bg: var(--bg-dark);
+      --text: var(--text-dark);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    html,
     body {
-      font-family: var(--font);
-      background: var(--bg);
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
       color: var(--text);
-      height: 100%;
+      display: flex;
+      height: 100vh;
       overflow: hidden;
     }
 
-    .sidebar-toggle {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      z-index: 1100;
-      background: transparent;
-      border: none;
-      font-size: 1.4rem;
-      cursor: pointer;
-      color: var(--text);
-    }
-
-    .top-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 1.2rem;
-      font-weight: bold;
-      padding: 12px 20px;
-      border-bottom: 1px solid #ddd;
-      text-align: center;
-      z-index: 1000;
-      user-select: none;
-    }
-
-    .login-button {
-      position: fixed;
-      top: 12px;
-      right: 20px;
-      background: var(--accent);
-      color: var(--bg);
-      font-weight: 600;
-      font-family: var(--font);
-      padding: 6px 12px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 0.85rem;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      z-index: 1101;
-      user-select: none;
-      transition: background-color 0.3s ease;
-    }
-    .login-button:hover {
-      background-color: #333;
-    }
-
-    .sidebar {
+    #sidebar {
       width: 260px;
+      background: #111827;
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    #chat-container {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
       background: var(--bg);
-      padding: 20px;
-      border-right: 1px solid #ddd;
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      top: 50px;
-      bottom: 0;
-      left: 0;
-      transform: translateX(-100%);
-      transition: transform 0.3s ease;
-      z-index: 1000;
-    }
-
-    .sidebar.show {
-      transform: translateX(0);
-    }
-
-    .sidebar h1 {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-      user-select: none;
-    }
-
-    .sidebar button {
-      background: none;
-      border: none;
       color: var(--text);
-      text-align: left;
-      padding: 10px 0;
-      font-size: 1rem;
-      cursor: pointer;
-      user-select: none;
-      transition: color 0.3s ease;
-    }
-    .sidebar button:hover {
-      color: var(--accent);
     }
 
-    .main {
-      position: absolute;
-      top: 50px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding: 20px;
-      transition: margin-left 0.3s ease;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .main.sidebar-open {
-      margin-left: 260px;
-    }
-
-    .chat-box {
+    #messages {
       flex: 1;
+      padding: 20px;
       overflow-y: auto;
-      max-width: 800px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      padding-top: 1rem;
     }
 
     .message {
-      padding: 10px 16px;
-      border-radius: 16px;
-      font-size: 0.95rem;
-      line-height: 1.5;
+      margin-bottom: 16px;
+      padding: 12px;
+      border-radius: 12px;
       max-width: 80%;
-      word-wrap: break-word;
-      white-space: pre-wrap;
-    }
-
-    .assistant {
-      background: var(--bot-bg);
-      align-self: flex-start;
-      text-align: left;
     }
 
     .user {
-      background: var(--user-bg);
+      background-color: #2563eb;
+      color: white;
       align-self: flex-end;
-      text-align: right;
     }
 
-    .input-wrapper {
-      background: var(--input-bg);
-      border-top: 1px solid #ddd;
-      padding: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+    .bot {
+      background-color: #d1d5db;
+      color: black;
+      align-self: flex-start;
     }
 
-    .input-bar {
-      flex-grow: 1;
+    #input-area {
       display: flex;
-      align-items: center;
+      padding: 10px;
+      border-top: 1px solid #ccc;
+      background-color: var(--bg);
+    }
+
+    #user-input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
       border: 1px solid #ccc;
-      border-radius: 24px;
-      padding: 10px 14px;
-      background: var(--bg);
     }
 
-    .input-bar textarea {
-      flex-grow: 1;
-      border: none;
-      font-size: 1rem;
-      resize: none;
-      background: transparent;
-      outline: none;
-      color: var(--text);
-      user-select: text;
-    }
-
-    .input-bar button {
-      background: var(--accent);
+    #send-btn {
+      background: black;
       color: white;
       border: none;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
+      border-radius: 8px;
+      padding: 10px 16px;
       margin-left: 10px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      user-select: none;
-      transition: background-color 0.3s ease;
-    }
-    .input-bar button:hover {
-      background-color: #333;
     }
 
-    /* Plus button style for file upload */
-    .file-upload-label {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+    #theme-toggle {
+      background: #333;
+      color: #fff;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
-      background: var(--accent);
-      color: var(--bg);
-      font-size: 1.8rem;
-      font-weight: bold;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      user-select: none;
-      transition: background-color 0.3s ease;
-    }
-    .file-upload-label:hover {
-      background: #0078d4; /* A nice blue on hover */
-    }
-    input[type='file'] {
-      display: none;
-    }
-
-    /* Toggle switch container */
-    .toggle-switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 24px;
-    }
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      background-color: #ccc;
-      border-radius: 24px;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      transition: 0.3s;
-    }
-    .slider:before {
-      position: absolute;
-      content: '';
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      border-radius: 50%;
-      transition: 0.3s;
-    }
-    input:checked + .slider {
-      background-color: var(--accent);
-    }
-    input:checked + .slider:before {
-      transform: translateX(26px);
-    }
-    .toggle-label {
-      margin-left: 10px;
-      font-size: 0.9rem;
-      vertical-align: middle;
-      user-select: none;
-      cursor: pointer;
-    }
-
-    .footer-note {
-      text-align: center;
-      font-size: 0.85rem;
-      color: #888;
       margin-top: 10px;
-      user-select: none;
+    }
+
+    #monetag-ad {
+      border: 1px solid #888;
+      border-radius: 8px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 100%;
+      height: 120px;
+      border: none;
     }
 
     @media (max-width: 768px) {
-      .main.sidebar-open {
-        margin-left: 0;
+      #sidebar {
+        display: none;
       }
-      .sidebar {
-        width: 220px;
-      }
-      .login-button {
-        top: 10px;
-        right: 10px;
+
+      body {
+        flex-direction: column;
       }
     }
   </style>
 </head>
 <body>
-  <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-  <div class="top-bar">FrostBot.Ai</div>
-  <a href="login.html" id="loginBtn" class="login-button">Login</a>
-
-  <div class="sidebar" id="sidebar">
-    <h1>FrostBot.Ai</h1>
-    <button>AI Chat</button>
-    <button onclick="logoutUser()">Logout</button>
-    <button onclick="toggleTheme()">Toggle Theme</button>
-    <div style="margin-top: 20px; font-size: 0.8rem; color: #999;">[ Put ad tag here ]</div>
+  <div id="sidebar">
+    <div>
+      <h2>FrostBot.Ai</h2>
+      <p>Chat with an AI assistant</p>
+      <button id="theme-toggle">Toggle Theme</button>
+    </div>
+    <div id="monetag-ad">
+      <!-- Sidebar bottom ad -->
+      <iframe src="https://go.pushnative.com/adserve?ad=sidebar-bottom" title="Ad"></iframe>
+    </div>
   </div>
 
-  <div class="main" id="mainContent">
-    <div class="chat-box" id="chatBox">
-      <div class="message assistant">❄️ Welcome, traveler. What frost-bitten wisdom do you seek today?</div>
-    </div>
-    <div class="input-wrapper">
-      <div class="input-bar">
-        <textarea
-          id="userInput"
-          rows="1"
-          placeholder="Send a message..."
-          aria-label="Message input"
-        ></textarea>
-        <button onclick="sendMessage()" aria-label="Send message">→</button>
-      </div>
-
-      <!-- File upload plus sign -->
-      <label for="fileUpload" class="file-upload-label" title="Upload file(s)">+</label>
-      <input type="file" id="fileUpload" multiple />
-    </div>
-
-    <div style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
-      <label class="toggle-switch" title="Toggle Rapid Answers">
-        <input type="checkbox" id="rapidToggle" />
-        <span class="slider"></span>
-      </label>
-      <label for="rapidToggle" class="toggle-label">Rapid Answers (faster replies)</label>
-    </div>
-
-    <div class="footer-note">
-      FrostBot.Ai can make mistakes. Consider checking important information.
+  <div id="chat-container">
+    <div id="messages"></div>
+    <div id="input-area">
+      <input type="text" id="user-input" placeholder="Type your message..."/>
+      <button id="send-btn"><i class="fas fa-arrow-up"></i></button>
     </div>
   </div>
 
   <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const chatBox = document.getElementById('chatBox');
-      const userInput = document.getElementById('userInput');
-      const sidebar = document.getElementById('sidebar');
-      const main = document.getElementById('mainContent');
-      const loginBtn = document.getElementById('loginBtn');
-      const rapidToggle = document.getElementById('rapidToggle');
-      const fileUpload = document.getElementById('fileUpload');
+    const OPENROUTER_API_KEY = "sk-or-14f1f18d-ba3d-4843-85c2-ec4b8475e91d";
+    const messagesContainer = document.getElementById('messages');
+    const inputField = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-btn');
+    const themeToggle = document.getElementById('theme-toggle');
+    let questionCount = 0;
+    const questionLimit = 5;
 
-      function appendMessage(text, type = 'assistant') {
-        const msg = document.createElement('div');
-        msg.className = `message ${type}`;
-        msg.textContent = text;
-        chatBox.appendChild(msg);
-        chatBox.scrollTop = chatBox.scrollHeight;
+    function appendMessage(text, className) {
+      const msg = document.createElement('div');
+      msg.className = `message ${className}`;
+      msg.textContent = text;
+      messagesContainer.appendChild(msg);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const input = inputField.value.trim();
+      if (!input) return;
+
+      appendMessage(input, 'user');
+      inputField.value = '';
+
+      questionCount++;
+      if (questionCount > questionLimit) {
+        appendMessage("⚠️ You've hit your free message limit. Watch an ad to continue or try again later.", 'bot');
+        return;
       }
 
-      function sendMessage() {
-        const input = userInput.value.trim();
-        if (!input) return;
+      appendMessage("Typing...", 'bot');
+      const messages = Array.from(document.querySelectorAll('.message'))
+        .filter(m => m.classList.contains('user') || m.classList.contains('bot'))
+        .map(m => ({
+          role: m.classList.contains('user') ? 'user' : 'assistant',
+          content: m.textContent
+        }));
 
-        appendMessage(input, 'user');
-        userInput.value = '';
+      try {
+        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "openchat/openchat-7b:free",
+            messages: messages,
+            temperature: 0.7
+          })
+        });
 
-        // Check if rapid mode is enabled
-        const rapidMode = rapidToggle.checked;
-
-        // Simulate AI response delay
-        setTimeout(() => {
-          appendMessage(
-            rapidMode
-              ? '🧊 Rapid reply from FrostBot.Ai!'
-              : "🧊 Here's a standard reply from FrostBot.Ai.",
-            'assistant'
-          );
-        }, rapidMode ? 300 : 1000);
+        const data = await res.json();
+        const reply = data.choices?.[0]?.message?.content || "⚠️ AI failed to respond.";
+        document.querySelector('.bot:last-child').remove();
+        appendMessage(reply, 'bot');
+      } catch (e) {
+        document.querySelector('.bot:last-child').remove();
+        appendMessage("⚠️ Network error. Try again.", 'bot');
       }
+    }
 
-      userInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          sendMessage();
-        }
-      });
+    sendButton.addEventListener('click', sendMessage);
+    inputField.addEventListener('keypress', e => {
+      if (e.key === 'Enter') sendMessage();
+    });
 
-      window.toggleSidebar = function () {
-        sidebar.classList.toggle('show');
-        main.classList.toggle('sidebar-open');
-      };
-
-      window.toggleTheme = function () {
-        const html = document.documentElement;
-        const current = html.getAttribute('data-theme');
-        html.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
-      };
-
-      window.sendMessage = sendMessage;
-
-      window.logoutUser = function () {
-        localStorage.removeItem('frostbotUser');
-        loginBtn.style.display = 'block';
-        alert('You have been logged out.');
-      };
-
-      // Show or hide login/logout buttons based on login status
-      const currentUser = localStorage.getItem('frostbotUser');
-      if (currentUser) {
-        loginBtn.style.display = 'none';
-      } else {
-        // Hide Logout button if not logged in
-        const logoutBtn = [...sidebar.querySelectorAll('button')].find(
-          (btn) => btn.textContent === 'Logout'
-        );
-        if (logoutBtn) logoutBtn.style.display = 'none';
-      }
-
-      // Handle file uploads (just show filename for demo)
-      fileUpload.addEventListener('change', () => {
-        const files = Array.from(fileUpload.files);
-        if (files.length) {
-          appendMessage(`📎 Uploaded file(s): ${files.map(f => f.name).join(', ')}`, 'user');
-          // Here you can handle file upload logic to your backend
-        }
-        fileUpload.value = ''; // Reset so same file can be re-uploaded if needed
-      });
+    themeToggle.addEventListener('click', () => {
+      const html = document.documentElement;
+      const newTheme = html.getAttribute("data-theme") === "light" ? "dark" : "light";
+      html.setAttribute("data-theme", newTheme);
     });
   </script>
 </body>
 </html>
-
