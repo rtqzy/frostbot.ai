@@ -16,6 +16,7 @@
       --user-bg: #e0e0e0;
       --input-bg: #ffffff;
     }
+
     [data-theme="dark"] {
       --bg: #1a1a1a;
       --text: #f5f5f5;
@@ -24,6 +25,7 @@
       --user-bg: #444;
       --input-bg: #2a2a2a;
     }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -37,6 +39,7 @@
       height: 100%;
       overflow: hidden;
     }
+
     .sidebar-toggle {
       position: fixed;
       top: 10px;
@@ -48,6 +51,7 @@
       cursor: pointer;
       color: var(--text);
     }
+
     .top-bar {
       position: fixed;
       top: 0;
@@ -63,6 +67,7 @@
       z-index: 1000;
       user-select: none;
     }
+
     .login-button {
       position: fixed;
       top: 12px;
@@ -77,7 +82,13 @@
       font-size: 0.85rem;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       z-index: 1101;
+      user-select: none;
+      transition: background-color 0.3s ease;
     }
+    .login-button:hover {
+      background-color: #333;
+    }
+
     .sidebar {
       width: 260px;
       background: var(--bg);
@@ -93,13 +104,17 @@
       transition: transform 0.3s ease;
       z-index: 1000;
     }
+
     .sidebar.show {
       transform: translateX(0);
     }
+
     .sidebar h1 {
       font-size: 1.4rem;
       margin-bottom: 1rem;
+      user-select: none;
     }
+
     .sidebar button {
       background: none;
       border: none;
@@ -108,7 +123,13 @@
       padding: 10px 0;
       font-size: 1rem;
       cursor: pointer;
+      user-select: none;
+      transition: color 0.3s ease;
     }
+    .sidebar button:hover {
+      color: var(--accent);
+    }
+
     .main {
       position: absolute;
       top: 50px;
@@ -120,9 +141,11 @@
       display: flex;
       flex-direction: column;
     }
+
     .main.sidebar-open {
       margin-left: 260px;
     }
+
     .chat-box {
       flex: 1;
       overflow-y: auto;
@@ -133,6 +156,7 @@
       gap: 0.6rem;
       padding-top: 1rem;
     }
+
     .message {
       padding: 10px 16px;
       border-radius: 16px;
@@ -142,26 +166,31 @@
       word-wrap: break-word;
       white-space: pre-wrap;
     }
+
     .assistant {
       background: var(--bot-bg);
       align-self: flex-start;
       text-align: left;
     }
+
     .user {
       background: var(--user-bg);
       align-self: flex-end;
       text-align: right;
     }
+
     .input-wrapper {
       background: var(--input-bg);
       border-top: 1px solid #ddd;
       padding: 14px;
       display: flex;
+      align-items: center;
       justify-content: center;
+      gap: 10px;
     }
+
     .input-bar {
-      width: 100%;
-      max-width: 800px;
+      flex-grow: 1;
       display: flex;
       align-items: center;
       border: 1px solid #ccc;
@@ -169,15 +198,18 @@
       padding: 10px 14px;
       background: var(--bg);
     }
+
     .input-bar textarea {
-      flex: 1;
+      flex-grow: 1;
       border: none;
       font-size: 1rem;
       resize: none;
       background: transparent;
       outline: none;
       color: var(--text);
+      user-select: text;
     }
+
     .input-bar button {
       background: var(--accent);
       color: white;
@@ -191,25 +223,92 @@
       align-items: center;
       justify-content: center;
       font-size: 1.2rem;
+      user-select: none;
+      transition: background-color 0.3s ease;
     }
+    .input-bar button:hover {
+      background-color: #333;
+    }
+
+    /* Plus button style for file upload */
+    .file-upload-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: var(--accent);
+      color: var(--bg);
+      font-size: 1.8rem;
+      font-weight: bold;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+    .file-upload-label:hover {
+      background: #0078d4; /* A nice blue on hover */
+    }
+    input[type='file'] {
+      display: none;
+    }
+
+    /* Toggle switch container */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      background-color: #ccc;
+      border-radius: 24px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transition: 0.3s;
+    }
+    .slider:before {
+      position: absolute;
+      content: '';
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    input:checked + .slider {
+      background-color: var(--accent);
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    .toggle-label {
+      margin-left: 10px;
+      font-size: 0.9rem;
+      vertical-align: middle;
+      user-select: none;
+      cursor: pointer;
+    }
+
     .footer-note {
       text-align: center;
       font-size: 0.85rem;
       color: #888;
       margin-top: 10px;
-    }
-    .toggle-container {
-      margin: 10px 0 15px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.9rem;
-      cursor: pointer;
       user-select: none;
     }
-    .file-upload {
-      margin: 10px 0;
-    }
+
     @media (max-width: 768px) {
       .main.sidebar-open {
         margin-left: 0;
@@ -232,9 +331,7 @@
   <div class="sidebar" id="sidebar">
     <h1>FrostBot.Ai</h1>
     <button>AI Chat</button>
-    <button id="voiceToggleBtn">Voice Mode</button>
-    <button id="savedConvBtn">Saved Conversations</button>
-    <button onclick="logoutUser()" id="logoutBtn" style="display:none;">Logout</button>
+    <button onclick="logoutUser()">Logout</button>
     <button onclick="toggleTheme()">Toggle Theme</button>
     <div style="margin-top: 20px; font-size: 0.8rem; color: #999;">[ Put ad tag here ]</div>
   </div>
@@ -243,20 +340,28 @@
     <div class="chat-box" id="chatBox">
       <div class="message assistant">❄️ Welcome, traveler. What frost-bitten wisdom do you seek today?</div>
     </div>
-
-    <div class="toggle-container">
-      <label for="rapidToggle">Rapid Answers (faster replies)</label>
-      <input type="checkbox" id="rapidToggle" />
-    </div>
-
     <div class="input-wrapper">
       <div class="input-bar">
-        <textarea id="userInput" rows="1" placeholder="Send a message..."></textarea>
-        <button onclick="sendMessage()">→</button>
+        <textarea
+          id="userInput"
+          rows="1"
+          placeholder="Send a message..."
+          aria-label="Message input"
+        ></textarea>
+        <button onclick="sendMessage()" aria-label="Send message">→</button>
       </div>
-      <div class="file-upload">
-        <input type="file" id="fileUpload" multiple />
-      </div>
+
+      <!-- File upload plus sign -->
+      <label for="fileUpload" class="file-upload-label" title="Upload file(s)">+</label>
+      <input type="file" id="fileUpload" multiple />
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
+      <label class="toggle-switch" title="Toggle Rapid Answers">
+        <input type="checkbox" id="rapidToggle" />
+        <span class="slider"></span>
+      </label>
+      <label for="rapidToggle" class="toggle-label">Rapid Answers (faster replies)</label>
     </div>
 
     <div class="footer-note">
@@ -265,124 +370,91 @@
   </div>
 
   <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const chatBox = document.getElementById("chatBox");
-      const userInput = document.getElementById("userInput");
-      const sidebar = document.getElementById("sidebar");
-      const main = document.getElementById("mainContent");
-      const loginBtn = document.getElementById("loginBtn");
-      const logoutBtn = document.getElementById("logoutBtn");
-      const rapidToggle = document.getElementById("rapidToggle");
-      const voiceToggleBtn = document.getElementById("voiceToggleBtn");
-      const savedConvBtn = document.getElementById("savedConvBtn");
-      const fileUpload = document.getElementById("fileUpload");
+    window.addEventListener('DOMContentLoaded', () => {
+      const chatBox = document.getElementById('chatBox');
+      const userInput = document.getElementById('userInput');
+      const sidebar = document.getElementById('sidebar');
+      const main = document.getElementById('mainContent');
+      const loginBtn = document.getElementById('loginBtn');
+      const rapidToggle = document.getElementById('rapidToggle');
+      const fileUpload = document.getElementById('fileUpload');
 
-      // Toggle sidebar open/close
-      window.toggleSidebar = function () {
-        sidebar.classList.toggle("show");
-        main.classList.toggle("sidebar-open");
-      };
-
-      // Theme toggle
-      window.toggleTheme = function () {
-        const html = document.documentElement;
-        const current = html.getAttribute("data-theme");
-        html.setAttribute("data-theme", current === "light" ? "dark" : "light");
-      };
-
-      // Append message with optional extra class (e.g., typing)
-      function appendMessage(text, type = "assistant", extraClass = "") {
-        const msg = document.createElement("div");
-        msg.className = `message ${type} ${extraClass}`.trim();
+      function appendMessage(text, type = 'assistant') {
+        const msg = document.createElement('div');
+        msg.className = `message ${type}`;
         msg.textContent = text;
         chatBox.appendChild(msg);
         chatBox.scrollTop = chatBox.scrollHeight;
       }
 
-      // Load saved conversations (dummy example)
-      savedConvBtn.addEventListener("click", () => {
-        alert("Saved conversations feature coming soon!");
-      });
-
-      // Voice toggle (placeholder)
-      voiceToggleBtn.addEventListener("click", () => {
-        alert("Voice mode coming soon!");
-      });
-
-      // Logout function
-      window.logoutUser = function () {
-        localStorage.removeItem("frostbotUser");
-        loginBtn.style.display = "block";
-        logoutBtn.style.display = "none";
-        alert("You have been logged out.");
-      };
-
-      // Check if logged in
-      const currentUser = localStorage.getItem("frostbotUser");
-      if (currentUser) {
-        loginBtn.style.display = "none";
-        logoutBtn.style.display = "block";
-      } else {
-        loginBtn.style.display = "block";
-        logoutBtn.style.display = "none";
-      }
-
-      // Handle file uploads (just display file names here)
-      fileUpload.addEventListener("change", () => {
-        const files = Array.from(fileUpload.files);
-        if (files.length) {
-          appendMessage(
-            `📎 Uploaded files: ${files.map((f) => f.name).join(", ")}`,
-            "user"
-          );
-          // TODO: Actually send files to backend or AI processor
-        }
-      });
-
-      // Send message to backend AI
-      async function sendMessage() {
+      function sendMessage() {
         const input = userInput.value.trim();
         if (!input) return;
 
-        appendMessage(input, "user");
-        userInput.value = "";
+        appendMessage(input, 'user');
+        userInput.value = '';
 
-        appendMessage("🧊 FrostBot.Ai is thinking...", "assistant", "typing");
+        // Check if rapid mode is enabled
+        const rapidMode = rapidToggle.checked;
 
-        try {
-          const rapid = rapidToggle.checked;
-
-          const response = await fetch("/api/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: input, rapid }),
-          });
-
-          if (!response.ok) throw new Error(`Error: ${response.status}`);
-
-          const data = await response.json();
-          // Remove typing indicator
-          const typingMsg = document.querySelector(".message.assistant.typing");
-          if (typingMsg) typingMsg.remove();
-
-          appendMessage(data.reply, "assistant");
-        } catch (err) {
-          const typingMsg = document.querySelector(".message.assistant.typing");
-          if (typingMsg) typingMsg.remove();
-          appendMessage("⚠️ Sorry, something went wrong.", "assistant");
-          console.error(err);
-        }
+        // Simulate AI response delay
+        setTimeout(() => {
+          appendMessage(
+            rapidMode
+              ? '🧊 Rapid reply from FrostBot.Ai!'
+              : "🧊 Here's a standard reply from FrostBot.Ai.",
+            'assistant'
+          );
+        }, rapidMode ? 300 : 1000);
       }
 
-      // Bind sendMessage to button and Enter key
-      userInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" && !e.shiftKey) {
+      userInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault();
           sendMessage();
         }
       });
 
+      window.toggleSidebar = function () {
+        sidebar.classList.toggle('show');
+        main.classList.toggle('sidebar-open');
+      };
+
+      window.toggleTheme = function () {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        html.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+      };
+
       window.sendMessage = sendMessage;
+
+      window.logoutUser = function () {
+        localStorage.removeItem('frostbotUser');
+        loginBtn.style.display = 'block';
+        alert('You have been logged out.');
+      };
+
+      // Show or hide login/logout buttons based on login status
+      const currentUser = localStorage.getItem('frostbotUser');
+      if (currentUser) {
+        loginBtn.style.display = 'none';
+      } else {
+        // Hide Logout button if not logged in
+        const logoutBtn = [...sidebar.querySelectorAll('button')].find(
+          (btn) => btn.textContent === 'Logout'
+        );
+        if (logoutBtn) logoutBtn.style.display = 'none';
+      }
+
+      // Handle file uploads (just show filename for demo)
+      fileUpload.addEventListener('change', () => {
+        const files = Array.from(fileUpload.files);
+        if (files.length) {
+          appendMessage(`📎 Uploaded file(s): ${files.map(f => f.name).join(', ')}`, 'user');
+          // Here you can handle file upload logic to your backend
+        }
+        fileUpload.value = ''; // Reset so same file can be re-uploaded if needed
+      });
     });
   </script>
 </body>
